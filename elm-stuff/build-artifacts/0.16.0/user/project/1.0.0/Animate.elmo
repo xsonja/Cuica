@@ -1,0 +1,87 @@
+Elm.Animate = Elm.Animate || {};
+Elm.Animate.make = function (_elm) {
+   "use strict";
+   _elm.Animate = _elm.Animate || {};
+   if (_elm.Animate.values) return _elm.Animate.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Keyframes = Elm.Keyframes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm),
+   $Time = Elm.Time.make(_elm),
+   $Window = Elm.Window.make(_elm);
+   var _op = {};
+   var expand = F4(function (totalTime,oldw,currTime,prev) {
+      var animation = A3($Keyframes.transition,"width","10.0","100.0");
+      var strw = $Basics.toString(oldw);
+      var neww = $Basics.toString(oldw * 10);
+      return A3($Keyframes.playOnce,totalTime,animation,currTime);
+   });
+   var fade = F3(function (totalTime,currTime,prev) {
+      var animation = A3($Keyframes.transition,"opacity","1","0");
+      return A3($Keyframes.playOnce,totalTime,animation,currTime);
+   });
+   var inc = F2(function (freq,sig) {    return A3($Signal.foldp,F2(function (t,f) {    return f + 0.1;}),0,A2($Time.fpsWhen,freq,sig));});
+   var control = $Signal.constant(true);
+   var animateOverTime = function (x) {
+      return _U.eq(x,1) ? A3($Signal.foldp,fade(100.0),_U.list([]),A2(inc,200,control)) : A3($Signal.foldp,
+      A2(expand,10.0,10.0),
+      _U.list([]),
+      A2(inc,200,control));
+   };
+   var drawCircle = function (r) {    return A2($Graphics$Collage.filled,$Color.black,$Graphics$Collage.circle(r));};
+   var draw = F3(function (_p0,s,e) {
+      var _p1 = _p0;
+      var _p2 = s;
+      if (_p2.ctor === "[]") {
+            return A2($Graphics$Element.opacity,1,e);
+         } else {
+            var _p7 = _p2._0._0;
+            var argh = $String.toFloat(_p2._0._1);
+            if (_U.eq(_p7,"opacity")) {
+                  var _p3 = argh;
+                  if (_p3.ctor === "Ok") {
+                        return A2($Graphics$Element.opacity,_p3._0,e);
+                     } else {
+                        return _U.crashCase("Animate",{start: {line: 40,column: 17},end: {line: 42,column: 54}},_p3)("opacity not ok");
+                     }
+               } else if (_U.eq(_p7,"width")) {
+                     var _p5 = argh;
+                     if (_p5.ctor === "Ok") {
+                           return A3($Graphics$Collage.collage,
+                           _p1._0,
+                           _p1._1,
+                           _U.list([A2($Graphics$Collage.move,{ctor: "_Tuple2",_0: 200,_1: 200},drawCircle(_p5._0))]));
+                        } else {
+                           return _U.crashCase("Animate",{start: {line: 44,column: 17},end: {line: 46,column: 52}},_p5)("width not ok");
+                        }
+                  } else return _U.crash("Animate",{start: {line: 48,column: 17},end: {line: 48,column: 28}})("function unknown");
+         }
+   });
+   var view = F2(function (_p8,s) {
+      var _p9 = _p8;
+      var _p11 = _p9._0;
+      var _p10 = _p9._1;
+      return A2($Graphics$Element.flow,
+      $Graphics$Element.left,
+      _U.list([A3(draw,{ctor: "_Tuple2",_0: _p11,_1: _p10},s,A3($Graphics$Collage.collage,_p11,_p10,_U.list([drawCircle(10)])))]));
+   });
+   var main = A3($Signal.map2,view,$Window.dimensions,animateOverTime(2));
+   return _elm.Animate.values = {_op: _op
+                                ,drawCircle: drawCircle
+                                ,draw: draw
+                                ,view: view
+                                ,control: control
+                                ,inc: inc
+                                ,fade: fade
+                                ,expand: expand
+                                ,animateOverTime: animateOverTime
+                                ,main: main};
+};

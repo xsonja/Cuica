@@ -1,0 +1,484 @@
+Elm.Draw = Elm.Draw || {};
+Elm.Draw.make = function (_elm) {
+   "use strict";
+   _elm.Draw = _elm.Draw || {};
+   if (_elm.Draw.values) return _elm.Draw.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Animations = Elm.Animations.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $FormMake = Elm.FormMake.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $RandSelect = Elm.RandSelect.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm);
+   var _op = {};
+   var getVal = function (str) {
+      var res = $String.toFloat(str);
+      var _p0 = res;
+      if (_p0.ctor === "Ok") {
+            return _p0._0;
+         } else {
+            return _U.crashCase("Draw",
+            {start: {line: 28,column: 5},end: {line: 30,column: 51}},
+            _p0)("getVal not valid result");
+         }
+   };
+   var empty = A2($FormMake.drawCircle,0,$Color.black);
+   var draw = F2(function (_p3,_p2) {
+      var _p4 = _p3;
+      var _p40 = _p4._0;
+      var _p39 = _p4._1;
+      var _p5 = _p2;
+      var _p38 = _p5._1._1;
+      var _p37 = _p5._1._0;
+      var _p36 = _p5._0;
+      var wfloat = $Basics.toFloat(_p40);
+      var hfloat = $Basics.toFloat(_p39);
+      if (_U.eq(_p37,_U.chr("a"))) {
+            var list = A4($Animations.expandShrink,
+            1.0,
+            $Basics.toString(wfloat / 50),
+            $Basics.toString(wfloat / 5),
+            _p36);
+            var _p6 = list;
+            if (_p6.ctor === "::" && _p6._0.ctor === "_Tuple2" && _p6._1.ctor === "[]")
+            {
+                  var r = getVal(_p6._0._1);
+                  return A2($FormMake.drawCircle,r,$Color.darkBlue);
+               } else {
+                  return empty;
+               }
+         } else if (_U.eq(_p37,_U.chr("j"))) {
+               var list = A3($Animations.getnFrames,
+               7,
+               {ctor: "_Tuple2",_0: _p40,_1: _p39},
+               _p36);
+               var llines = A4($FormMake.drawLines,
+               list,
+               0,
+               {ctor: "_Tuple2",_0: _p40,_1: _p39},
+               true);
+               var rlines = A4($FormMake.drawLines,
+               list,
+               0,
+               {ctor: "_Tuple2",_0: _p40,_1: _p39},
+               false);
+               return $Graphics$Collage.group(A2($List.append,llines,rlines));
+            } else if (_U.eq(_p37,_U.chr("h"))) {
+                  var list = A5($Animations.growShrink,
+                  1.0,
+                  "2.0",
+                  $Basics.toString(wfloat / 5),
+                  $Basics.toString(0 - wfloat / 5),
+                  _p36);
+                  var _p7 = list;
+                  if (_p7.ctor === "::" && _p7._0.ctor === "_Tuple2" && _p7._1.ctor === "[]")
+                  {
+                        var l = getVal(_p7._0._1);
+                        return A2($FormMake.manyLines,
+                        {ctor: "_Tuple2",_0: _p40,_1: _p39},
+                        l);
+                     } else {
+                        return empty;
+                     }
+               } else if (_U.eq(_p37,_U.chr("s"))) {
+                     var list = A4($Animations.angle,2.5,"0","360",_p36);
+                     var _p8 = list;
+                     if (_p8.ctor === "::" && _p8._0.ctor === "_Tuple2" && _p8._1.ctor === "[]")
+                     {
+                           var deg = getVal(_p8._0._1);
+                           var octagon = A3($FormMake.drawngon,
+                           8,
+                           wfloat / 4.5,
+                           $FormMake.hPink);
+                           return A2($Graphics$Collage.rotate,
+                           $Basics.degrees(deg),
+                           octagon({ctor: "_Tuple2",_0: wfloat,_1: hfloat}));
+                        } else {
+                           return empty;
+                        }
+                  } else if (_U.eq(_p37,_U.chr("c"))) {
+                        var list = A4($Animations.angle,2.5,"0","360",_p36);
+                        var _p9 = list;
+                        if (_p9.ctor === "::" && _p9._0.ctor === "_Tuple2" && _p9._1.ctor === "[]")
+                        {
+                              var deg = getVal(_p9._0._1);
+                              return A5($FormMake.fourmultngon,
+                              4,
+                              wfloat / 10,
+                              deg,
+                              {ctor: "_Tuple2",_0: wfloat,_1: hfloat},
+                              $FormMake.bBlue);
+                           } else {
+                              return empty;
+                           }
+                     } else if (_U.eq(_p37,_U.chr("d"))) {
+                           var list = A4($Animations.quadOutexpandwait,
+                           3.0,
+                           "0",
+                           $Basics.toString(wfloat / 4),
+                           _p36);
+                           var _p10 = list;
+                           if (_p10.ctor === "::" && _p10._0.ctor === "_Tuple2" && _p10._1.ctor === "[]")
+                           {
+                                 var r = getVal(_p10._0._1);
+                                 return A2($Graphics$Collage.move,
+                                 A2($FormMake.trans,{ctor: "_Tuple2",_0: 0,_1: r},_p38),
+                                 A3($FormMake.sparkle1,
+                                 r,
+                                 _p38,
+                                 {ctor: "_Tuple2",_0: wfloat,_1: hfloat}));
+                              } else {
+                                 return empty;
+                              }
+                        } else if (_U.eq(_p37,_U.chr("f"))) {
+                              var list = A4($Animations.expand,
+                              2.0,
+                              "0",
+                              $Basics.toString(_p40),
+                              _p36);
+                              var _p11 = list;
+                              if (_p11.ctor === "::" && _p11._0.ctor === "_Tuple2" && _p11._1.ctor === "[]")
+                              {
+                                    var r = getVal(_p11._0._1);
+                                    return A2($FormMake.sparkle2,
+                                    r,
+                                    {ctor: "_Tuple2",_0: _p40,_1: _p39});
+                                 } else {
+                                    return empty;
+                                 }
+                           } else if (_U.eq(_p37,_U.chr("g"))) {
+                                 var hfloat = $Basics.toFloat(_p39);
+                                 var list = A4($Animations.expand,
+                                 1.0,
+                                 "0",
+                                 $Basics.toString($Basics.sqrt(2) * wfloat),
+                                 _p36);
+                                 var _p12 = list;
+                                 if (_p12.ctor === "::" && _p12._0.ctor === "_Tuple2" && _p12._1.ctor === "[]")
+                                 {
+                                       var r = getVal(_p12._0._1);
+                                       return A2($FormMake.twoLines,
+                                       {ctor: "_Tuple2",_0: _p40,_1: _p39},
+                                       r);
+                                    } else {
+                                       return empty;
+                                    }
+                              } else if (_U.eq(_p37,_U.chr("q"))) {
+                                    var list = A4($Animations.quadExpand,
+                                    0.1,
+                                    "0",
+                                    $Basics.toString($Basics.sqrt(2) * wfloat),
+                                    _p36);
+                                    var _p13 = list;
+                                    if (_p13.ctor === "::" && _p13._0.ctor === "_Tuple2" && _p13._1.ctor === "[]")
+                                    {
+                                          var r = getVal(_p13._0._1);
+                                          return A3($FormMake.singLine,
+                                          {ctor: "_Tuple2",_0: wfloat,_1: hfloat},
+                                          _p38,
+                                          r);
+                                       } else {
+                                          return empty;
+                                       }
+                                 } else if (_U.eq(_p37,_U.chr("y"))) {
+                                       var list = A4($Animations.expandwait,1.5,"3","8",_p36);
+                                       var _p14 = list;
+                                       if (_p14.ctor === "::" && _p14._0.ctor === "_Tuple2" && _p14._1.ctor === "[]")
+                                       {
+                                             var n = $Basics.round(getVal(_p14._0._1));
+                                             return A3($FormMake.fillngon,n,wfloat / 6,$Color.black);
+                                          } else {
+                                             return empty;
+                                          }
+                                    } else if (_U.eq(_p37,_U.chr("x")))
+                                    return A2($Graphics$Collage.filled,
+                                       $Color.white,
+                                       A2($Graphics$Collage.rect,wfloat,hfloat)); else if (_U.eq(_p37,
+                                       _U.chr("m"))) {
+                                             var list = A4($Animations.expandwait,
+                                             1.0,
+                                             $Basics.toString(hfloat / 2),
+                                             $Basics.toString((0 - hfloat) / 14),
+                                             _p36);
+                                             var _p15 = list;
+                                             if (_p15.ctor === "::" && _p15._0.ctor === "_Tuple2" && _p15._1.ctor === "[]")
+                                             {
+                                                   var y = getVal(_p15._0._1);
+                                                   return A4($FormMake.twoTriangles,wfloat,y,hfloat / 7,_p38);
+                                                } else {
+                                                   return empty;
+                                                }
+                                          } else if (_U.eq(_p37,_U.chr("n"))) {
+                                                var list = A6($Animations.moveShrink,
+                                                0.95,
+                                                $Basics.toString(hfloat / 2),
+                                                $Basics.toString((0 - hfloat) / 4),
+                                                $Basics.toString(wfloat / 10),
+                                                $Basics.toString(0),
+                                                _p36);
+                                                var _p16 = list;
+                                                if (_p16.ctor === "::" && _p16._0.ctor === "_Tuple2" && _p16._1.ctor === "::" && _p16._1._0.ctor === "_Tuple2" && _p16._1._1.ctor === "[]")
+                                                {
+                                                      var _p19 = _p16._1._0._1;
+                                                      var _p18 = _p16._0._1;
+                                                      var _p17 = _p16._0._0;
+                                                      var pos = _U.eq(_p17,"position") ? getVal(_p18) : getVal(_p19);
+                                                      var size = _U.eq(_p17,"width") ? getVal(_p18) : getVal(_p19);
+                                                      var x = _U.eq(A2($Basics._op["%"],_p38,2),
+                                                      0) ? (0 - wfloat) / 4 : wfloat / 4;
+                                                      var y = _U.eq(A2($Basics._op["%"],_p38,2),0) ? pos : 0 - pos;
+                                                      return A2($Graphics$Collage.move,
+                                                      {ctor: "_Tuple2",_0: x,_1: y},
+                                                      A2($FormMake.drawCircle,
+                                                      size,
+                                                      A4($Color.rgba,255,255,255,size / (wfloat / 10))));
+                                                   } else {
+                                                      return empty;
+                                                   }
+                                             } else if (_U.eq(_p37,_U.chr("t"))) {
+                                                   var list = A6($Animations.shrinkRotate,
+                                                   8.0,
+                                                   "0",
+                                                   "10",
+                                                   $Basics.toString(wfloat / 2),
+                                                   "0",
+                                                   _p36);
+                                                   var _p20 = list;
+                                                   if (_p20.ctor === "::" && _p20._0.ctor === "_Tuple2" && _p20._1.ctor === "::" && _p20._1._0.ctor === "_Tuple2" && _p20._1._1.ctor === "[]")
+                                                   {
+                                                         var deg = getVal(_p20._0._1);
+                                                         var s = getVal(_p20._1._0._1);
+                                                         var square = A3($FormMake.drawthickngon,4,s,$Color.orange);
+                                                         return A2($Graphics$Collage.rotate,
+                                                         deg,
+                                                         square({ctor: "_Tuple2",_0: wfloat,_1: hfloat}));
+                                                      } else {
+                                                         return empty;
+                                                      }
+                                                } else if (_U.eq(_p37,_U.chr("p"))) {
+                                                      var _p21 = A2($RandSelect.nPos,
+                                                      {ctor: "_Tuple2",_0: wfloat,_1: hfloat},
+                                                      _p38);
+                                                      var x = _p21._0;
+                                                      var y = _p21._1;
+                                                      var list = A4($Animations.expand,
+                                                      1.0,
+                                                      "0",
+                                                      $Basics.toString($Basics.sqrt(2) * wfloat),
+                                                      _p36);
+                                                      var _p22 = list;
+                                                      if (_p22.ctor === "::" && _p22._0.ctor === "_Tuple2" && _p22._1.ctor === "[]")
+                                                      {
+                                                            var r = getVal(_p22._0._1);
+                                                            return A4($FormMake.oneLine,
+                                                            A2($FormMake.thickestLine,
+                                                            $Color.lightRed,
+                                                            {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+                                                            {ctor: "_Tuple2",_0: x,_1: y},
+                                                            r,
+                                                            10.0 * r);
+                                                         } else {
+                                                            return empty;
+                                                         }
+                                                   } else if (_U.eq(_p37,_U.chr("o"))) {
+                                                         var _p23 = A2($RandSelect.nPos,
+                                                         {ctor: "_Tuple2",_0: wfloat,_1: hfloat},
+                                                         _p38);
+                                                         var x = _p23._0;
+                                                         var y = _p23._1;
+                                                         var list = A4($Animations.fadeExpand,1.0,"0.70","0",_p36);
+                                                         var _p24 = list;
+                                                         if (_p24.ctor === "::" && _p24._0.ctor === "_Tuple2" && _p24._1.ctor === "::" && _p24._1._0.ctor === "_Tuple2" && _p24._1._1.ctor === "[]")
+                                                         {
+                                                               var r = getVal(_p24._0._1);
+                                                               var r2 = getVal(_p24._1._0._1);
+                                                               return A2($Graphics$Collage.alpha,
+                                                               r2,
+                                                               A4($FormMake.dotClusters,
+                                                               r,
+                                                               _p38,
+                                                               {ctor: "_Tuple2",_0: r + x,_1: y - r2},
+                                                               {ctor: "_Tuple2",_0: _p40,_1: _p39}));
+                                                            } else {
+                                                               return A2($FormMake.drawCircle,0,$Color.black);
+                                                            }
+                                                      } else if (_U.eq(_p37,_U.chr("b"))) {
+                                                            var list = A4($Animations.quadExpand,
+                                                            0.5,
+                                                            $Basics.toString(wfloat / 2),
+                                                            $Basics.toString(wfloat / 5),
+                                                            _p36);
+                                                            var _p25 = A2($RandSelect.randStart,_p38,hfloat);
+                                                            var x = _p25._0;
+                                                            var y = _p25._1;
+                                                            var _p26 = list;
+                                                            if (_p26.ctor === "::" && _p26._0.ctor === "_Tuple2" && _p26._1.ctor === "[]")
+                                                            {
+                                                                  var r = getVal(_p26._0._1);
+                                                                  return A2($Graphics$Collage.move,
+                                                                  {ctor: "_Tuple2",_0: x,_1: y},
+                                                                  A3($FormMake.drawOval,wfloat,r,$Color.lightGrey));
+                                                               } else {
+                                                                  return empty;
+                                                               }
+                                                         } else if (_U.eq(_p37,_U.chr("k"))) {
+                                                               var list = A4($Animations.quadInOutexpandShrink,
+                                                               1.0,
+                                                               "0",
+                                                               $Basics.toString(wfloat / 15),
+                                                               _p36);
+                                                               var _p27 = list;
+                                                               if (_p27.ctor === "::" && _p27._0.ctor === "_Tuple2" && _p27._1.ctor === "[]")
+                                                               {
+                                                                     var size = getVal(_p27._0._1);
+                                                                     return A2($FormMake.doubleZig,
+                                                                     A3($FormMake.zigPathGen,size,hfloat / 10,9),
+                                                                     {ctor: "_Tuple2",_0: wfloat,_1: hfloat});
+                                                                  } else {
+                                                                     return empty;
+                                                                  }
+                                                            } else if (_U.eq(_p37,_U.chr("l"))) {
+                                                                  var list = A4($Animations.expand,1.0,"0","10",_p36);
+                                                                  var _p28 = list;
+                                                                  if (_p28.ctor === "::" && _p28._0.ctor === "_Tuple2" && _p28._1.ctor === "[]")
+                                                                  {
+                                                                        var x = $Basics.round(getVal(_p28._0._1));
+                                                                        var startx = _U.eq(A2($Basics._op["%"],_p38,2),
+                                                                        0) ? -7 * wfloat / 16 : 7 * wfloat / 16;
+                                                                        var newy = _U.cmp(_p38,5) < 1 ? hfloat / 4 : (0 - hfloat) / 4;
+                                                                        var inc = _U.eq(A2($Basics._op["%"],_p38,2),
+                                                                        0) ? wfloat / 10 : (0 - wfloat) / 10;
+                                                                        return A2($Graphics$Collage.move,
+                                                                        {ctor: "_Tuple2",_0: 0,_1: newy},
+                                                                        A2($FormMake.drawPath2,
+                                                                        A4($FormMake.zigPathGen2,x,startx,inc,hfloat / 10),
+                                                                        {ctor: "_Tuple2",_0: wfloat,_1: hfloat}));
+                                                                     } else {
+                                                                        return empty;
+                                                                     }
+                                                               } else if (_U.eq(_p37,_U.chr("z"))) {
+                                                                     var list = A4($Animations.expand,
+                                                                     1.0,
+                                                                     "0",
+                                                                     $Basics.toString(wfloat / 2),
+                                                                     _p36);
+                                                                     var _p29 = list;
+                                                                     if (_p29.ctor === "::" && _p29._0.ctor === "_Tuple2" && _p29._1.ctor === "[]")
+                                                                     {
+                                                                           var x = getVal(_p29._0._1);
+                                                                           return A2($Graphics$Collage.move,
+                                                                           {ctor: "_Tuple2",_0: (0 - wfloat) / 4,_1: 0},
+                                                                           A4($FormMake.drawSine,
+                                                                           0,
+                                                                           x,
+                                                                           hfloat / 8,
+                                                                           {ctor: "_Tuple2",_0: wfloat,_1: hfloat}));
+                                                                        } else {
+                                                                           return empty;
+                                                                        }
+                                                                  } else if (_U.eq(_p37,_U.chr("w"))) {
+                                                                        var start = _U.eq(A2($Basics._op["%"],_p38,2),
+                                                                        0) ? wfloat : hfloat;
+                                                                        var list = A4($Animations.quadExpand,
+                                                                        0.85,
+                                                                        $Basics.toString(start),
+                                                                        "0",
+                                                                        _p36);
+                                                                        var _p30 = list;
+                                                                        if (_p30.ctor === "::" && _p30._0.ctor === "_Tuple2" && _p30._1.ctor === "[]")
+                                                                        {
+                                                                              var r = getVal(_p30._0._1);
+                                                                              var _p31 = _U.eq(A2($Basics._op["%"],_p38,2),
+                                                                              0) ? {ctor: "_Tuple2",_0: r,_1: hfloat} : {ctor: "_Tuple2"
+                                                                                                                        ,_0: wfloat
+                                                                                                                        ,_1: r};
+                                                                              var rw = _p31._0;
+                                                                              var rh = _p31._1;
+                                                                              return A2($Graphics$Collage.filled,
+                                                                              $Color.lightPurple,
+                                                                              A2($Graphics$Collage.rect,rw,rh));
+                                                                           } else {
+                                                                              return empty;
+                                                                           }
+                                                                     } else if (_U.eq(_p37,_U.chr("e"))) {
+                                                                           var list = A4($Animations.expand,0.8,"0","400",_p36);
+                                                                           var _p32 = list;
+                                                                           if (_p32.ctor === "::" && _p32._0.ctor === "_Tuple2" && _p32._1.ctor === "[]")
+                                                                           {
+                                                                                 var theta = getVal(_p32._0._1);
+                                                                                 return A3($FormMake.gradualCircle,
+                                                                                 wfloat / 4,
+                                                                                 theta,
+                                                                                 {ctor: "_Tuple2",_0: wfloat,_1: hfloat});
+                                                                              } else {
+                                                                                 return empty;
+                                                                              }
+                                                                        } else if (_U.eq(_p37,_U.chr("r"))) {
+                                                                              var list = A4($Animations.expand,0.8,"0","180",_p36);
+                                                                              var _p33 = list;
+                                                                              if (_p33.ctor === "::" && _p33._0.ctor === "_Tuple2" && _p33._1.ctor === "[]")
+                                                                              {
+                                                                                    var angle = getVal(_p33._0._1);
+                                                                                    var pink = A4($Color.rgba,177,96,247,0.8);
+                                                                                    return A2($Graphics$Collage.rotate,
+                                                                                    $Basics.degrees(angle),
+                                                                                    A5($FormMake.circleDots,
+                                                                                    A2($Basics.min,11 * wfloat / 24,11 * hfloat / 24),
+                                                                                    wfloat / 100,
+                                                                                    18,
+                                                                                    pink,
+                                                                                    {ctor: "_Tuple2",_0: wfloat,_1: hfloat}));
+                                                                                 } else {
+                                                                                    return empty;
+                                                                                 }
+                                                                           } else if (_U.eq(_p37,_U.chr("u")))
+                                                                           return A2($Graphics$Collage.filled,
+                                                                              $Color.black,
+                                                                              A2($Graphics$Collage.rect,wfloat,hfloat)); else if (_U.eq(_p37,
+                                                                              _U.chr("i"))) {
+                                                                                    var list = A4($Animations.expExpand,
+                                                                                    0.9,
+                                                                                    "0",
+                                                                                    $Basics.toString(2.8 * wfloat),
+                                                                                    _p36);
+                                                                                    var _p34 = list;
+                                                                                    if (_p34.ctor === "::" && _p34._0.ctor === "_Tuple2" && _p34._1.ctor === "[]")
+                                                                                    {
+                                                                                          var r = getVal(_p34._0._1);
+                                                                                          return A5($FormMake.ripple,
+                                                                                          r,
+                                                                                          0,
+                                                                                          0,
+                                                                                          153,
+                                                                                          {ctor: "_Tuple2",_0: wfloat,_1: hfloat});
+                                                                                       } else {
+                                                                                          return empty;
+                                                                                       }
+                                                                                 } else if (_U.eq(_p37,_U.chr("v"))) {
+                                                                                       var list = A4($Animations.expand,1.0,"1080","0",_p36);
+                                                                                       var _p35 = list;
+                                                                                       if (_p35.ctor === "::" && _p35._0.ctor === "_Tuple2" && _p35._1.ctor === "[]")
+                                                                                       {
+                                                                                             var angle = getVal(_p35._0._1);
+                                                                                             return A2($Graphics$Collage.move,
+                                                                                             {ctor: "_Tuple2",_0: wfloat / 4,_1: (0 - hfloat) / 4},
+                                                                                             A3($FormMake.goldenSpiral,
+                                                                                             angle,
+                                                                                             wfloat / 200,
+                                                                                             {ctor: "_Tuple2",_0: wfloat,_1: hfloat}));
+                                                                                          } else {
+                                                                                             return empty;
+                                                                                          }
+                                                                                    } else return empty;
+   });
+   return _elm.Draw.values = {_op: _op
+                             ,empty: empty
+                             ,getVal: getVal
+                             ,draw: draw};
+};

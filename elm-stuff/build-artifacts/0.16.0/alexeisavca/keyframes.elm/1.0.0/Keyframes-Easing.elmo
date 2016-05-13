@@ -1,0 +1,134 @@
+Elm.Keyframes = Elm.Keyframes || {};
+Elm.Keyframes.Easing = Elm.Keyframes.Easing || {};
+Elm.Keyframes.Easing.make = function (_elm) {
+   "use strict";
+   _elm.Keyframes = _elm.Keyframes || {};
+   _elm.Keyframes.Easing = _elm.Keyframes.Easing || {};
+   if (_elm.Keyframes.Easing.values) return _elm.Keyframes.Easing.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Dict = Elm.Dict.make(_elm),
+   $Interpolation = Elm.Interpolation.make(_elm),
+   $Keyframes = Elm.Keyframes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var linear = function (tween) {    return tween;};
+   var ease = F3(function (func,tween,t) {
+      var to = $Dict.fromList(tween(t));
+      var tValues = F2(function (property,value) {
+         var tValue = F2(function (a,b) {    return A5(func,t,1,t,a,b - a);});
+         var toNumbers = $Interpolation.extractNumbers(A2($Maybe.withDefault,value,A2($Dict.get,property,to)));
+         var fromNumbers = $Interpolation.extractNumbers(value);
+         var numbersPlaceholder = $Interpolation.placeholdNumbers(value);
+         return A2($Interpolation.interpolateNumbers,numbersPlaceholder,A3($List.map2,tValue,fromNumbers,toNumbers));
+      });
+      var from = $Dict.fromList(tween(0));
+      return $Dict.toList(A2($Dict.map,tValues,from));
+   });
+   var easeInQuad = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * Math.pow(progressRatio,2) + value;}));
+   var easeOutQuad = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {
+      return $Basics.negate(change) * progressRatio * (progressRatio - 2) + value;
+   }));
+   var easeInOutQuad = function () {
+      var easing = F5(function (currentTime,totalTime,progressRatio,value,change) {
+         var t = currentTime / (totalTime / 2);
+         var t$ = t - 1;
+         return _U.cmp(t,1) < 0 ? change / 2 * t * t + value : change / 2 * (t$ * (t$ - 2) - 1) + value;
+      });
+      return ease(easing);
+   }();
+   var easeInCubic = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * Math.pow(progressRatio,3) + value;}));
+   var easeOutCubic = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * (Math.pow(progressRatio - 1,3) + 1) + value;}));
+   var easeInOutCubic = function () {
+      var easing = F5(function (currentTime,totalTime,progressRatio,value,change) {
+         var t = currentTime / (totalTime / 2);
+         var t$ = t - 2;
+         return _U.cmp(t,1) < 0 ? change / 2 * Math.pow(t,3) + value : change / 2 * (Math.pow(t$,3) + 2) + value;
+      });
+      return ease(easing);
+   }();
+   var easeInQuart = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * Math.pow(progressRatio,4) + value;}));
+   var easeOutQuart = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * (Math.pow(progressRatio - 1,4) - 1) + value;}));
+   var easeInOutQuart = function () {
+      var easing = F5(function (currentTime,totalTime,progressRatio,value,change) {
+         var t = currentTime / (totalTime / 2);
+         var t$ = t - 2;
+         return _U.cmp(t,1) < 0 ? change / 2 * Math.pow(t,4) + value : change / 2 * (Math.pow(t$,4) + 2) + value;
+      });
+      return ease(easing);
+   }();
+   var easeInQuint = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * Math.pow(progressRatio,5) + value;}));
+   var easeOutQuint = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * (Math.pow(progressRatio - 1,5) + 1) + value;}));
+   var easeInOutQuint = function () {
+      var easing = F5(function (currentTime,totalTime,progressRatio,value,change) {
+         var t = currentTime / (totalTime / 2);
+         var t$ = t - 2;
+         return _U.cmp(t,1) < 0 ? change / 2 * Math.pow(t,5) + value : change / 2 * (Math.pow(t$,5) + 2) + value;
+      });
+      return ease(easing);
+   }();
+   var easeInSine = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {
+      return $Basics.negate(change) * $Basics.cos(progressRatio * ($Basics.pi / 2)) + change + value;
+   }));
+   var easeOutSine = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {
+      return $Basics.negate(change) * $Basics.sin(progressRatio * ($Basics.pi / 2)) + value;
+   }));
+   var easeInOutSine = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {
+      return $Basics.negate(change) / 2 * $Basics.cos($Basics.pi * progressRatio) - 1 + value;
+   }));
+   var easeInExpo = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {    return change * Math.pow(2,10 * (progressRatio - 1)) + value;}));
+   var easeOutExpo = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {
+      return change * Math.pow(2,$Basics.negate(-10 * (progressRatio + 1))) + value;
+   }));
+   var easeInOutExpo = function () {
+      var easing = F5(function (currentTime,totalTime,progressRatio,value,change) {
+         var t = currentTime / (totalTime / 2);
+         var t$ = t - 1;
+         return _U.cmp(t,1) < 0 ? change / 2 * Math.pow(2,10 * t$) + value : change / 2 * ($Basics.negate(Math.pow(2,-10 * t$)) + 2) + value;
+      });
+      return ease(easing);
+   }();
+   var easeInCirc = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {
+      return $Basics.negate(change) * ($Basics.sqrt(1 - Math.pow(progressRatio,2)) - 1) + value;
+   }));
+   var easeOutCirc = ease(F5(function (currentTime,totalTime,progressRatio,value,change) {
+      return change * $Basics.sqrt(1 - Math.pow(progressRatio - 1,2)) + value;
+   }));
+   var easeInOutCirc = function () {
+      var easing = F5(function (currentTime,totalTime,progressRatio,value,change) {
+         var t = currentTime / (totalTime / 2);
+         var t$ = t - 2;
+         return _U.cmp(t,1) < 0 ? $Basics.negate(change) / 2 * ($Basics.sqrt(1 - Math.pow(t,2)) - 1) + value : change / 2 * ($Basics.sqrt(1 - Math.pow(t$,
+         2)) + 1) + value;
+      });
+      return ease(easing);
+   }();
+   return _elm.Keyframes.Easing.values = {_op: _op
+                                         ,ease: ease
+                                         ,linear: linear
+                                         ,easeInQuad: easeInQuad
+                                         ,easeOutQuad: easeOutQuad
+                                         ,easeInOutQuad: easeInOutQuad
+                                         ,easeInCubic: easeInCubic
+                                         ,easeOutCubic: easeOutCubic
+                                         ,easeInOutCubic: easeInOutCubic
+                                         ,easeInQuart: easeInQuart
+                                         ,easeOutQuart: easeOutQuart
+                                         ,easeInOutQuart: easeInOutQuart
+                                         ,easeInQuint: easeInQuint
+                                         ,easeOutQuint: easeOutQuint
+                                         ,easeInOutQuint: easeInOutQuint
+                                         ,easeInSine: easeInSine
+                                         ,easeOutSine: easeOutSine
+                                         ,easeInOutSine: easeInOutSine
+                                         ,easeInExpo: easeInExpo
+                                         ,easeOutExpo: easeOutExpo
+                                         ,easeInOutExpo: easeInOutExpo
+                                         ,easeInCirc: easeInCirc
+                                         ,easeOutCirc: easeOutCirc
+                                         ,easeInOutCirc: easeInOutCirc};
+};

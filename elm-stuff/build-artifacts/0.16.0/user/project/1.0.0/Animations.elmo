@@ -1,0 +1,199 @@
+Elm.Animations = Elm.Animations || {};
+Elm.Animations.make = function (_elm) {
+   "use strict";
+   _elm.Animations = _elm.Animations || {};
+   if (_elm.Animations.values) return _elm.Animations.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Keyframes = Elm.Keyframes.make(_elm),
+   $Keyframes$Easing = Elm.Keyframes.Easing.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var moveShrink = F6(function (totalTime,
+   startpos,
+   endpos,
+   startsize,
+   endsize,
+   frame) {
+      var move = $Keyframes$Easing.easeOutQuad(A3($Keyframes.transition,
+      "position",
+      startpos,
+      endpos));
+      var movemerge = $Keyframes.merge(_U.list([move
+                                               ,A2($Keyframes.linger,
+                                               0.5,
+                                               A3($Keyframes.transition,"width",startsize,startsize))]));
+      var shrink = $Keyframes$Easing.easeInExpo(A3($Keyframes.transition,
+      "width",
+      startsize,
+      endsize));
+      var shrinkmerge = $Keyframes.merge(_U.list([shrink
+                                                 ,A2($Keyframes.linger,
+                                                 0.5,
+                                                 A3($Keyframes.transition,"position",endpos,endpos))]));
+      var both = $Keyframes.chain(_U.list([{ctor: "_Tuple2"
+                                           ,_0: 0
+                                           ,_1: movemerge}
+                                          ,{ctor: "_Tuple2",_0: 0.5,_1: shrinkmerge}]));
+      return A3($Keyframes.playOnce,totalTime,both,frame);
+   });
+   var growShrink = F5(function (totalTime,
+   start,
+   end,
+   negend,
+   frame) {
+      var grow = A3($Keyframes.transition,"width",start,end);
+      var both = $Keyframes.toAndFrom(grow);
+      var grow2 = A3($Keyframes.transition,"width",start,negend);
+      var both2 = $Keyframes.toAndFrom(grow2);
+      var combo = $Keyframes.chain(_U.list([{ctor: "_Tuple2"
+                                            ,_0: 0
+                                            ,_1: both}
+                                           ,{ctor: "_Tuple2",_0: 0.5,_1: both2}]));
+      return A3($Keyframes.playOnce,totalTime,combo,frame);
+   });
+   var getnFrames = F3(function (n,_p0,frame) {
+      var _p1 = _p0;
+      var _p2 = _p1._0;
+      if (_U.eq(n,0)) return _U.list([]); else {
+            var curr = A5(growShrink,
+            1.0,
+            "2.0",
+            $Basics.toString(_p2 / 5 | 0),
+            $Basics.toString(0 - (_p2 / 5 | 0)),
+            frame);
+            return A2($List.append,
+            curr,
+            A3(getnFrames,
+            n - 1,
+            {ctor: "_Tuple2",_0: _p2,_1: _p1._1},
+            frame + 4.0e-2));
+         }
+   });
+   var angle = F4(function (totalTime,start,end,frame) {
+      return A3($Keyframes.playOnce,
+      totalTime,
+      A3($Keyframes.transition,"rotate",start,end),
+      frame);
+   });
+   var fadeExpand = F4(function (totalTime,start,end,frame) {
+      var exp = $Keyframes$Easing.easeInQuad(A3($Keyframes.transition,
+      "width",
+      start,
+      end));
+      var opacity = $Keyframes$Easing.easeInExpo(A3($Keyframes.transition,
+      "opacity",
+      start,
+      end));
+      var merged = $Keyframes.merge(_U.list([opacity,exp]));
+      return A3($Keyframes.playOnce,totalTime,merged,frame);
+   });
+   var fade = F4(function (totalTime,start,end,frame) {
+      return A3($Keyframes.playOnce,
+      totalTime,
+      A3($Keyframes.transition,"opacity",start,end),
+      frame);
+   });
+   var quadOutexpandwait = F4(function (totalTime,
+   start,
+   end,
+   frame) {
+      var expand = A3($Keyframes.transition,"width",start,end);
+      return A3($Keyframes.playOnce,
+      totalTime,
+      $Keyframes$Easing.easeOutCubic(A2($Keyframes.linger,
+      0.5,
+      expand)),
+      frame);
+   });
+   var expandwait = F4(function (totalTime,start,end,frame) {
+      var expand = A3($Keyframes.transition,"width",start,end);
+      return A3($Keyframes.playOnce,
+      totalTime,
+      A2($Keyframes.linger,0.5,expand),
+      frame);
+   });
+   var shrinkRotate = F6(function (totalTime,
+   startang,
+   endang,
+   startsize,
+   endsize,
+   frame) {
+      var rotated = $Keyframes.reverse(A3($Keyframes.transition,
+      "rotate",
+      startang,
+      endang));
+      var shrinkmerge = $Keyframes.merge(_U.list([rotated
+                                                 ,A3($Keyframes.transition,"width",startsize,endsize)]));
+      return A3($Keyframes.playOnce,totalTime,shrinkmerge,frame);
+   });
+   var quadInOutexpandShrink = F4(function (totalTime,
+   start,
+   end,
+   frame) {
+      var ex = A3($Keyframes.transition,"width",start,end);
+      var exs = $Keyframes.toAndFrom(ex);
+      return A3($Keyframes.playOnce,
+      totalTime,
+      $Keyframes$Easing.easeInOutQuad(exs),
+      frame);
+   });
+   var expandShrink = F4(function (totalTime,start,end,frame) {
+      var ex = A3($Keyframes.transition,"width",start,end);
+      var exs = $Keyframes.toAndFrom(ex);
+      return A3($Keyframes.playOnce,totalTime,exs,frame);
+   });
+   var expExpand = F4(function (totalTime,start,end,frame) {
+      return A3($Keyframes.playOnce,
+      totalTime,
+      $Keyframes$Easing.easeInExpo(A3($Keyframes.transition,
+      "width",
+      start,
+      end)),
+      frame);
+   });
+   var quadInOutExpand = F4(function (totalTime,start,end,frame) {
+      return A3($Keyframes.playOnce,
+      totalTime,
+      $Keyframes$Easing.easeInOutQuad(A3($Keyframes.transition,
+      "width",
+      start,
+      end)),
+      frame);
+   });
+   var quadExpand = F4(function (totalTime,start,end,frame) {
+      return A3($Keyframes.playOnce,
+      totalTime,
+      $Keyframes$Easing.easeInQuad(A3($Keyframes.transition,
+      "width",
+      start,
+      end)),
+      frame);
+   });
+   var expand = F4(function (totalTime,start,end,frame) {
+      return A3($Keyframes.playOnce,
+      totalTime,
+      A3($Keyframes.transition,"width",start,end),
+      frame);
+   });
+   return _elm.Animations.values = {_op: _op
+                                   ,expand: expand
+                                   ,quadExpand: quadExpand
+                                   ,quadInOutExpand: quadInOutExpand
+                                   ,expExpand: expExpand
+                                   ,expandShrink: expandShrink
+                                   ,quadInOutexpandShrink: quadInOutexpandShrink
+                                   ,shrinkRotate: shrinkRotate
+                                   ,expandwait: expandwait
+                                   ,quadOutexpandwait: quadOutexpandwait
+                                   ,fade: fade
+                                   ,fadeExpand: fadeExpand
+                                   ,angle: angle
+                                   ,growShrink: growShrink
+                                   ,moveShrink: moveShrink
+                                   ,getnFrames: getnFrames};
+};

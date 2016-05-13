@@ -1,0 +1,24 @@
+Elm.CountPageVisits = Elm.CountPageVisits || {};
+Elm.CountPageVisits.make = function (_elm) {
+   "use strict";
+   _elm.CountPageVisits = _elm.CountPageVisits || {};
+   if (_elm.CountPageVisits.values) return _elm.CountPageVisits.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Mouse = Elm.Mouse.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var reset = Elm.Native.Port.make(_elm).outboundSignal("reset",function (v) {    return [];},$Mouse.clicks);
+   var count = Elm.Native.Port.make(_elm).inboundSignal("count",
+   "Int",
+   function (v) {
+      return typeof v === "number" && isFinite(v) && Math.floor(v) === v ? v : _U.badPort("an integer",v);
+   });
+   var main = A2($Signal.map,function (i) {    return $Graphics$Element.show(A2($Basics._op["++"],"Counter: ",$Basics.toString(i)));},count);
+   return _elm.CountPageVisits.values = {_op: _op,main: main};
+};

@@ -1,0 +1,101 @@
+Elm.RandSelect = Elm.RandSelect || {};
+Elm.RandSelect.make = function (_elm) {
+   "use strict";
+   _elm.RandSelect = _elm.RandSelect || {};
+   if (_elm.RandSelect.values) return _elm.RandSelect.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var backCol = function (x) {
+      return _U.eq(x,1) ? A4($Color.rgba,
+      87,
+      242,
+      201,
+      0.25) : _U.eq(x,2) ? A4($Color.rgba,255,153,204,0.5) : _U.eq(x,
+      3) ? A4($Color.rgba,169,252,194,0.4) : _U.eq(x,
+      4) ? A4($Color.rgba,154,171,255,0.5) : A4($Color.rgba,
+      252,
+      219,
+      169,
+      0.5);
+   };
+   var getDir = F2(function (num,f) {
+      return _U.eq(num,1) ? {ctor: "_Tuple2"
+                            ,_0: 0
+                            ,_1: f} : _U.eq(num,2) ? {ctor: "_Tuple2"
+                                                     ,_0: f
+                                                     ,_1: 0} : _U.eq(num,3) ? {ctor: "_Tuple2"
+                                                                              ,_0: 0
+                                                                              ,_1: 0 - f} : _U.eq(num,4) ? {ctor: "_Tuple2"
+                                                                                                           ,_0: f
+                                                                                                           ,_1: f} : _U.eq(num,5) ? {ctor: "_Tuple2"
+                                                                                                                                    ,_0: f
+                                                                                                                                    ,_1: 0 - f} : _U.eq(num,
+      6) ? {ctor: "_Tuple2",_0: 0 - f,_1: 0 - f} : _U.eq(num,
+      7) ? {ctor: "_Tuple2",_0: 0 - f,_1: f} : {ctor: "_Tuple2"
+                                               ,_0: 0 - f
+                                               ,_1: 0};
+   });
+   var randStart = F2(function (rand,hfloat) {
+      return _U.cmp(rand,1) > -1 && _U.cmp(rand,
+      5) < 0 ? {ctor: "_Tuple2"
+               ,_0: 0
+               ,_1: (0 - hfloat) / 2} : {ctor: "_Tuple2",_0: 0,_1: hfloat / 2};
+   });
+   var colorGen = function (num) {
+      return _U.eq(num,1) || _U.eq(num,10) ? A3($Color.rgb,
+      102,
+      0,
+      0) : _U.eq(num,2) || _U.eq(num,9) ? A3($Color.rgb,
+      156,
+      15,
+      15) : _U.eq(num,3) || _U.eq(num,8) ? A3($Color.rgb,
+      153,
+      0,
+      0) : _U.eq(num,4) || _U.eq(num,7) ? A3($Color.rgb,
+      247,
+      47,
+      47) : A3($Color.rgb,204,51,51);
+   };
+   var nPos = F2(function (_p0,n) {
+      var _p1 = _p0;
+      var _p3 = _p1._0;
+      var _p2 = _p1._1;
+      return _U.eq(n,4) ? {ctor: "_Tuple2"
+                          ,_0: _p3 / 2
+                          ,_1: 0 - _p3 / 4} : _U.eq(n,8) ? {ctor: "_Tuple2"
+                                                           ,_0: _p3 / 2
+                                                           ,_1: _p3 / 20} : _U.eq(n,1) ? {ctor: "_Tuple2"
+                                                                                         ,_0: 0 - _p3 / 2
+                                                                                         ,_1: _p3 / 4} : _U.eq(n,5) ? {ctor: "_Tuple2"
+                                                                                                                      ,_0: 0 - _p3 / 2
+                                                                                                                      ,_1: 0 - _p3 / 6} : _U.eq(n,
+      9) ? {ctor: "_Tuple2",_0: 0 - _p3 / 2,_1: 0} : _U.eq(n,
+      2) ? {ctor: "_Tuple2",_0: _p2 / 2,_1: 0 - _p2 / 4} : _U.eq(n,
+      6) ? {ctor: "_Tuple2",_0: _p2 / 2,_1: _p2 / 7} : _U.eq(n,
+      10) ? {ctor: "_Tuple2",_0: _p2 / 2,_1: 0} : {ctor: "_Tuple2"
+                                                  ,_0: 0 - _p2 / 2
+                                                  ,_1: _p2 / 4};
+   });
+   var randInt = F3(function (len,upper,lower) {
+      var seed = $Random.initialSeed(len);
+      var gen = A2($Random.generate,
+      A2($Random.$int,upper,lower),
+      seed);
+      return $Basics.fst(gen);
+   });
+   return _elm.RandSelect.values = {_op: _op
+                                   ,randInt: randInt
+                                   ,nPos: nPos
+                                   ,colorGen: colorGen
+                                   ,randStart: randStart
+                                   ,getDir: getDir
+                                   ,backCol: backCol};
+};

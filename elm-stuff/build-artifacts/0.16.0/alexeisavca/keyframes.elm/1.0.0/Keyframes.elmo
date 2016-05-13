@@ -1,0 +1,103 @@
+Elm.Keyframes = Elm.Keyframes || {};
+Elm.Keyframes.make = function (_elm) {
+   "use strict";
+   _elm.Keyframes = _elm.Keyframes || {};
+   if (_elm.Keyframes.values) return _elm.Keyframes.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Dict = Elm.Dict.make(_elm),
+   $Interpolation = Elm.Interpolation.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var play = F3(function (duration,animation,currentTime) {    return animation(currentTime / duration);});
+   var playOnce = F3(function (duration,animation,currentTime) {
+      var currentTime$ = A3($Basics.clamp,0.0,duration,currentTime);
+      return A3(play,duration,animation,currentTime$);
+   });
+   var playInfinitely = F3(function (duration,animation,currentTime) {
+      var currentTime$ = $Basics.round(currentTime);
+      var duration$ = $Basics.round(duration);
+      var modulo = $Basics.toFloat(A2($Basics._op["%"],currentTime$,duration$));
+      return A3(play,duration,animation,modulo);
+   });
+   var merge = F2(function (animations,t) {
+      return $Dict.toList(A3($List.foldl,
+      $Dict.union,
+      $Dict.empty,
+      A2($List.map,$Dict.fromList,A2($List.map,function (animation) {    return animation(t);},animations))));
+   });
+   var chain = F2(function (animations,t) {
+      var afterT = F2(function (x,y) {    return _U.cmp(x,y) < 0;})(t);
+      var beforeT = F2(function (x,y) {    return _U.cmp(x,y) > -1;})(t);
+      var animations$ = $Dict.fromList(animations);
+      var currentAnimationIndex = A2($Maybe.withDefault,0,$List.maximum(A2($List.filter,beforeT,$Dict.keys(animations$))));
+      var currentAnimation = A2($Dict.get,currentAnimationIndex,animations$);
+      var animationDuration = function (min) {
+         return min - currentAnimationIndex;
+      }(A2($Maybe.withDefault,1.0,$List.minimum(A2($List.filter,afterT,$Dict.keys(animations$)))));
+      var relativeT = (t - currentAnimationIndex) / animationDuration;
+      var _p0 = currentAnimation;
+      if (_p0.ctor === "Just") {
+            return _p0._0(relativeT);
+         } else {
+            return _U.list([]);
+         }
+   });
+   var repeat = F2(function (times,animation) {
+      var times$ = $Basics.toFloat(times);
+      var time = function (time$) {
+         return _U.cmp(time$,times$) > -1 ? _U.list([]) : A2($List._op["::"],{ctor: "_Tuple2",_0: 1.0 - time$ / times$,_1: animation},time(time$ + 1.0));
+      };
+      return chain(time(0.0));
+   });
+   var reverse = F2(function (animation,t) {    return animation(1.0 - t);});
+   var toAndFrom = function (animation) {    return chain(_U.list([{ctor: "_Tuple2",_0: 0,_1: animation},{ctor: "_Tuple2",_0: 0.5,_1: reverse(animation)}]));};
+   var ensure = F2(function (state,t) {    return state;});
+   var ensureProperty = F2(function (property,value) {    return ensure(_U.list([{ctor: "_Tuple2",_0: property,_1: value}]));});
+   var linger = F2(function (t,animation) {
+      return chain(_U.list([{ctor: "_Tuple2",_0: 0,_1: animation},{ctor: "_Tuple2",_0: t,_1: ensure(animation(1.0))}]));
+   });
+   var foreshadow = F2(function (t,animation) {
+      return chain(_U.list([{ctor: "_Tuple2",_0: 0,_1: ensure(animation(0))},{ctor: "_Tuple2",_0: t,_1: animation}]));
+   });
+   var imposePresence = F3(function (from,to,animation) {
+      return chain(_U.list([{ctor: "_Tuple2",_0: 0,_1: ensure(animation(0))}
+                           ,{ctor: "_Tuple2",_0: from,_1: animation}
+                           ,{ctor: "_Tuple2",_0: to,_1: ensure(animation(1))}]));
+   });
+   var tween = F3(function (from,to,t) {
+      var to$ = $Dict.fromList(to);
+      var tValues = F2(function (property,value) {
+         var tValue = F2(function (a,b) {    return a + (b - a) * t;});
+         var toNumbers = $Interpolation.extractNumbers(A2($Maybe.withDefault,value,A2($Dict.get,property,to$)));
+         var fromNumbers = $Interpolation.extractNumbers(value);
+         var numbersPlaceholder = $Interpolation.placeholdNumbers(value);
+         return A2($Interpolation.interpolateNumbers,numbersPlaceholder,A3($List.map2,tValue,fromNumbers,toNumbers));
+      });
+      var from$ = $Dict.fromList(from);
+      return $Dict.toList(A2($Dict.map,tValues,from$));
+   });
+   var transition = F3(function (property,from,to) {
+      return A2(tween,_U.list([{ctor: "_Tuple2",_0: property,_1: from}]),_U.list([{ctor: "_Tuple2",_0: property,_1: to}]));
+   });
+   return _elm.Keyframes.values = {_op: _op
+                                  ,tween: tween
+                                  ,transition: transition
+                                  ,ensure: ensure
+                                  ,ensureProperty: ensureProperty
+                                  ,reverse: reverse
+                                  ,chain: chain
+                                  ,linger: linger
+                                  ,foreshadow: foreshadow
+                                  ,imposePresence: imposePresence
+                                  ,toAndFrom: toAndFrom
+                                  ,repeat: repeat
+                                  ,merge: merge
+                                  ,play: play
+                                  ,playOnce: playOnce
+                                  ,playInfinitely: playInfinitely};
+};

@@ -1,0 +1,122 @@
+Elm.ComplexAnimate = Elm.ComplexAnimate || {};
+Elm.ComplexAnimate.make = function (_elm) {
+   "use strict";
+   _elm.ComplexAnimate = _elm.ComplexAnimate || {};
+   if (_elm.ComplexAnimate.values) return _elm.ComplexAnimate.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Char = Elm.Char.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Keyboard = Elm.Keyboard.make(_elm),
+   $Keyframes = Elm.Keyframes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm),
+   $Time = Elm.Time.make(_elm),
+   $Window = Elm.Window.make(_elm);
+   var _op = {};
+   var view2 = F2(function (_p0,s) {    var _p1 = _p0;return $Graphics$Element.show(s);});
+   var inc = F2(function (freq,sig) {    return A3($Signal.foldp,F2(function (t,f) {    return f + 0.1;}),0,A2($Time.fpsWhen,freq,sig));});
+   var control = $Signal.constant(true);
+   var prune = function (s) {
+      prune: while (true) {
+         var _p2 = s;
+         if (_p2.ctor === "[]") {
+               return _U.list([]);
+            } else {
+               var _p4 = _p2._1;
+               var _p3 = _p2._0._0;
+               if (_U.cmp(_p3,1.0) > -1) {
+                     var _v2 = _p4;
+                     s = _v2;
+                     continue prune;
+                  } else return A2($List._op["::"],{ctor: "_Tuple2",_0: _p3 + 1.0e-2,_1: _p2._0._1},prune(_p4));
+            }
+      }
+   };
+   var upstate = F2(function (e,s) {
+      var _p5 = s;
+      if (_p5.ctor === "[]") {
+            var _p6 = e;
+            if (_p6.ctor === "NewKey") {
+                  var code = $Char.fromCode(_p6._0);
+                  return _U.list([{ctor: "_Tuple2",_0: 0,_1: code}]);
+               } else {
+                  return _U.list([]);
+               }
+         } else {
+            var _p7 = e;
+            if (_p7.ctor === "NewTime") {
+                  return prune(s);
+               } else {
+                  var code = $Char.fromCode(_p7._0);
+                  return A2($List._op["::"],{ctor: "_Tuple2",_0: 0,_1: code},s);
+               }
+         }
+   });
+   var drawCircle = function (r) {    return A2($Graphics$Collage.filled,$Color.black,$Graphics$Collage.circle(r));};
+   var draw = F2(function (_p9,_p8) {
+      var _p10 = _p9;
+      var _p20 = _p10._0;
+      var _p19 = _p10._1;
+      var _p11 = _p8;
+      var _p18 = _p11._0;
+      if (_U.eq(_p11._1,_U.chr("a"))) {
+            var list = A3($Keyframes.playOnce,1.0,A3($Keyframes.transition,"width","10.0","200.0"),_p18);
+            var _p12 = list;
+            if (_p12.ctor === "::" && _p12._0.ctor === "_Tuple2" && _p12._1.ctor === "[]") {
+                  var rres = $String.toFloat(_p12._0._1);
+                  var _p13 = rres;
+                  if (_p13.ctor === "Ok") {
+                        var blackcircle = drawCircle(_p13._0);
+                        return A3($Graphics$Collage.collage,_p20,_p19,_U.list([blackcircle]));
+                     } else {
+                        return _U.crashCase("ComplexAnimate",{start: {line: 33,column: 17},end: {line: 35,column: 58}},_p13)("r not valid result");
+                     }
+               } else {
+                  return A3($Graphics$Collage.collage,_p20,_p19,_U.list([]));
+               }
+         } else {
+            var list = A3($Keyframes.playOnce,1.0,A3($Keyframes.transition,"opacity","1","0"),_p18);
+            var _p15 = list;
+            if (_p15.ctor === "::" && _p15._0.ctor === "_Tuple2" && _p15._1.ctor === "[]") {
+                  var ores = $String.toFloat(_p15._0._1);
+                  var blackcircle = drawCircle(10.0);
+                  var _p16 = ores;
+                  if (_p16.ctor === "Ok") {
+                        return A2($Graphics$Element.opacity,_p16._0,A3($Graphics$Collage.collage,_p20,_p19,_U.list([blackcircle])));
+                     } else {
+                        return _U.crashCase("ComplexAnimate",{start: {line: 43,column: 17},end: {line: 45,column: 64}},_p16)("opacity not valid result");
+                     }
+               } else {
+                  return A3($Graphics$Collage.collage,_p20,_p19,_U.list([]));
+               }
+         }
+   });
+   var view = F2(function (_p21,currs) {
+      var _p22 = _p21;
+      return A2($Graphics$Element.flow,$Graphics$Element.left,A2($List.map,draw({ctor: "_Tuple2",_0: _p22._0,_1: _p22._1}),currs));
+   });
+   var NewKey = function (a) {    return {ctor: "NewKey",_0: a};};
+   var NewTime = function (a) {    return {ctor: "NewTime",_0: a};};
+   var state = A3($Signal.foldp,upstate,_U.list([]),A2($Signal.merge,A2($Signal.map,NewTime,$Time.fps(100)),A2($Signal.map,NewKey,$Keyboard.presses)));
+   var main = A3($Signal.map2,view,$Window.dimensions,state);
+   return _elm.ComplexAnimate.values = {_op: _op
+                                       ,NewTime: NewTime
+                                       ,NewKey: NewKey
+                                       ,drawCircle: drawCircle
+                                       ,draw: draw
+                                       ,prune: prune
+                                       ,upstate: upstate
+                                       ,state: state
+                                       ,view: view
+                                       ,control: control
+                                       ,inc: inc
+                                       ,view2: view2
+                                       ,main: main};
+};

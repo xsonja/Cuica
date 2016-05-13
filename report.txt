@@ -1,0 +1,33 @@
+﻿--------------------------------
+--------------------------------
+*CUICA* 
+
+--------------------------------
+--------------------------------
+
+What we've accomplished:
+-created a reasonable facsimile of the webapp patatap in elm
+-successfully utilized Ports and the Keyframes library to link sounds and animations to keypresses
+ as well as generating random numbers to randomize the positions and behaviors of some animations
+-created 26 animations from scratch in elm as well as created several original accompanying sounds
+
+Project Shortcomings:
+-We had originally hoped to create different color schemes for animations depending on the background
+color. However, we didn't end up doing this because we ran out of time.
+-Inter-browser incompatibility-because different browsers handle js and audio differently, our project only works (as far as we know) Chrome
+-Because animations are all stored in state as a list, if there are many animations going on at the same time, the program experiences lag and animations slow down
+
+Experiences with Elm:
+Working with random numbers:
+We struggled a bit with generating random numbers in the beginning in Elm since we had to seed the random generator with an initial value. But since elm can't just get some unique seed by itself (there’s no current time function), we eventually created a random port to get the current time and used that to seed our generator. However, this implementation had some unforeseen complications. When using the current time as the seed to generate a random integer between 1 and 10, the resulting integer was almost always even. When we tried moding the current time by various numbers, it resulted in the integer being almost always odd. This was problematic because we had some animations that changed depending on the random integer mod 2. We found that choosing a random integer between 0 and 100 first then moding by 10 helped this problem.
+
+Working with state:
+As mentioned before, almost everything is done using immutable lists in functional languages and that's limiting in that there is a lot of time overhead and inefficiency in processing these lists and adding things to them which is somewhat frustrating. The list must be constantly pruned, and the animations in the list must be constantly updated. 
+
+Working with Collage/Element:
+-Background color was part of the Element library while all of our animations were dealt with in the Collage library. Because of this, changing the background color (which was done with the spacebar) required us to change the form of the state. We originally had a state that was only a list. We changed it to a tuple with the first element in the tuple representing the background color.
+-Drawing the animations required a good deal of calculations using Collage and Keyframes. This may also contribute to the slowness when many animations are running.
+-Limited graphics library makes it difficult to create shapes that are non regular n-gon,circles, or lines. As a result we didn’t have the time to make fun animations like large ovals squishing into irregular blobs. We were able to figure out how to do some more interesting shapes (such as the sine wave, golden spiral, and zigzags) by utilizing paths in Elm.
+-Making animations where multiple components start at different times was also a difficult task we couldn't quite figure out how to approach due to the limited nature of the library.
+
+-It was nice to have certain levels of the javascript be abstracted away.

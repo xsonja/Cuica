@@ -1,0 +1,244 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values) return _elm.Main.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Char = Elm.Char.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Draw = Elm.Draw.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Keyboard = Elm.Keyboard.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $RandSelect = Elm.RandSelect.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm),
+   $Time = Elm.Time.make(_elm),
+   $Window = Elm.Window.make(_elm);
+   var _op = {};
+   var view2 = F2(function (_p0,s) {
+      var _p1 = _p0;
+      return $Graphics$Element.show(s);
+   });
+   var view = F2(function (_p2,s) {
+      var _p3 = _p2;
+      var _p5 = _p3._0;
+      var _p4 = _p3._1;
+      var bkgd = $Basics.fst(s);
+      var color = $RandSelect.backCol(bkgd);
+      var currs = $Basics.snd(s);
+      return A2($Graphics$Element.color,
+      color,
+      A4($Graphics$Element.container,
+      _p5,
+      _p4,
+      $Graphics$Element.middle,
+      A3($Graphics$Collage.collage,
+      _p5,
+      _p4,
+      A2($List.map,
+      $Draw.draw({ctor: "_Tuple2",_0: _p5,_1: _p4}),
+      currs))));
+   });
+   var toChar = function (str) {
+      return _U.eq(str,"a") ? _U.chr("a") : _U.eq(str,
+      "b") ? _U.chr("b") : _U.eq(str,"c") ? _U.chr("c") : _U.eq(str,
+      "d") ? _U.chr("d") : _U.eq(str,"e") ? _U.chr("e") : _U.eq(str,
+      "f") ? _U.chr("f") : _U.eq(str,"g") ? _U.chr("g") : _U.eq(str,
+      "h") ? _U.chr("h") : _U.eq(str,"i") ? _U.chr("i") : _U.eq(str,
+      "j") ? _U.chr("j") : _U.eq(str,"k") ? _U.chr("k") : _U.eq(str,
+      "l") ? _U.chr("l") : _U.eq(str,"m") ? _U.chr("m") : _U.eq(str,
+      "n") ? _U.chr("n") : _U.eq(str,"o") ? _U.chr("o") : _U.eq(str,
+      "p") ? _U.chr("p") : _U.eq(str,"q") ? _U.chr("q") : _U.eq(str,
+      "r") ? _U.chr("r") : _U.eq(str,"s") ? _U.chr("s") : _U.eq(str,
+      "t") ? _U.chr("t") : _U.eq(str,"u") ? _U.chr("u") : _U.eq(str,
+      "v") ? _U.chr("v") : _U.eq(str,"w") ? _U.chr("w") : _U.eq(str,
+      "x") ? _U.chr("x") : _U.eq(str,"y") ? _U.chr("y") : _U.eq(str,
+      "z") ? _U.chr("z") : _U.eq(str," ") ? _U.chr(" ") : _U.chr(".");
+   };
+   var jsToEvent = function (js) {
+      return {ctor: "_Tuple2"
+             ,_0: toChar(js.code)
+             ,_1: $Basics.round(js.seed)};
+   };
+   var changeBkgd = function (x) {
+      return _U.cmp(x,5) < 0 ? x + 1 : 1;
+   };
+   var prune = function (s) {
+      prune: while (true) {
+         var _p6 = s;
+         if (_p6.ctor === "[]") {
+               return _U.list([]);
+            } else {
+               var _p10 = _p6._1;
+               var _p9 = _p6._0._1._1;
+               var _p8 = _p6._0._1._0;
+               var _p7 = _p6._0._0;
+               if (_U.cmp(_p7,1.0) > 0) {
+                     var _v3 = _p10;
+                     s = _v3;
+                     continue prune;
+                  } else if (_U.eq(_p8,_U.chr("a"))) return A2($List._op["::"],
+                     {ctor: "_Tuple2"
+                     ,_0: _p7 + 2.0e-2
+                     ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                     prune(_p10)); else if (_U.eq(_p8,_U.chr("s")))
+                     return A2($List._op["::"],
+                        {ctor: "_Tuple2"
+                        ,_0: _p7 + 4.0e-2
+                        ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                        prune(_p10)); else if (_U.eq(_p8,_U.chr("d")))
+                        return A2($List._op["::"],
+                           {ctor: "_Tuple2"
+                           ,_0: _p7 + 2.0e-2
+                           ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                           prune(_p10)); else if (_U.eq(_p8,_U.chr("h")))
+                           return A2($List._op["::"],
+                              {ctor: "_Tuple2"
+                              ,_0: _p7 + 1.5e-2
+                              ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                              prune(_p10)); else if (_U.eq(_p8,_U.chr("g")))
+                              return A2($List._op["::"],
+                                 {ctor: "_Tuple2"
+                                 ,_0: _p7 + 4.0e-2
+                                 ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                 prune(_p10)); else if (_U.eq(_p8,_U.chr("y")))
+                                 return A2($List._op["::"],
+                                    {ctor: "_Tuple2"
+                                    ,_0: _p7 + 2.0e-2
+                                    ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                    prune(_p10)); else if (_U.eq(_p8,_U.chr("w")))
+                                    return A2($List._op["::"],
+                                       {ctor: "_Tuple2"
+                                       ,_0: _p7 + 1.5e-2
+                                       ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                       prune(_p10)); else if (_U.eq(_p8,_U.chr("e")))
+                                       return A2($List._op["::"],
+                                          {ctor: "_Tuple2"
+                                          ,_0: _p7 + 1.1e-2
+                                          ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                          prune(_p10)); else if (_U.eq(_p8,_U.chr("x")) || _U.eq(_p8,
+                                          _U.chr("u"))) return A2($List._op["::"],
+                                             {ctor: "_Tuple2"
+                                             ,_0: _p7 + 0.9
+                                             ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                             prune(_p10)); else if (_U.eq(_p8,_U.chr("q")))
+                                             return A2($List._op["::"],
+                                                {ctor: "_Tuple2"
+                                                ,_0: _p7 + 7.0e-2
+                                                ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                                prune(_p10)); else if (_U.eq(_p8,_U.chr("i")))
+                                                return A2($List._op["::"],
+                                                   {ctor: "_Tuple2"
+                                                   ,_0: _p7 + 4.0e-3
+                                                   ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                                   prune(_p10)); else if (_U.eq(_p8,_U.chr("p")))
+                                                   return A2($List._op["::"],
+                                                      {ctor: "_Tuple2"
+                                                      ,_0: _p7 + 2.0e-2
+                                                      ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                                      prune(_p10)); else if (_U.eq(_p8,_U.chr("n")))
+                                                      return A2($List._op["::"],
+                                                         {ctor: "_Tuple2"
+                                                         ,_0: _p7 + 1.5e-2
+                                                         ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                                         prune(_p10)); else return A2($List._op["::"],
+                                                         {ctor: "_Tuple2"
+                                                         ,_0: _p7 + 1.0e-2
+                                                         ,_1: {ctor: "_Tuple2",_0: _p8,_1: _p9}},
+                                                         prune(_p10));
+            }
+      }
+   };
+   var upstate = F2(function (e,s) {
+      var bkgd = $Basics.fst(s);
+      var list = $Basics.snd(s);
+      var _p11 = list;
+      if (_p11.ctor === "[]") {
+            var _p12 = e;
+            if (_p12.ctor === "NewKey" && _p12._0.ctor === "_Tuple2") {
+                  var _p13 = _p12._0._0;
+                  if (_U.eq(_p13,_U.chr(" "))) return {ctor: "_Tuple2"
+                                                      ,_0: changeBkgd(bkgd)
+                                                      ,_1: _U.list([])}; else {
+                        var rand = A2($Basics._op["%"],
+                        A3($RandSelect.randInt,_p12._0._1,0,100),
+                        10) + 1;
+                        return {ctor: "_Tuple2"
+                               ,_0: bkgd
+                               ,_1: _U.list([{ctor: "_Tuple2"
+                                             ,_0: 0
+                                             ,_1: {ctor: "_Tuple2",_0: _p13,_1: rand}}])};
+                     }
+               } else {
+                  return {ctor: "_Tuple2",_0: bkgd,_1: _U.list([])};
+               }
+         } else {
+            var _p14 = e;
+            if (_p14.ctor === "NewTime") {
+                  return {ctor: "_Tuple2",_0: bkgd,_1: prune(list)};
+               } else {
+                  var _p15 = _p14._0._0;
+                  if (_U.eq(_p15,_U.chr(" "))) return {ctor: "_Tuple2"
+                                                      ,_0: changeBkgd(bkgd)
+                                                      ,_1: list}; else {
+                        var old = $Char.toCode(_p11._0._1._0);
+                        var len = $List.length(list);
+                        var rand = A2($Basics._op["%"],
+                        A3($RandSelect.randInt,_p14._0._1,0,100),
+                        10) + 1;
+                        return {ctor: "_Tuple2"
+                               ,_0: bkgd
+                               ,_1: A2($List._op["::"],
+                               {ctor: "_Tuple2",_0: 0,_1: {ctor: "_Tuple2",_0: _p15,_1: rand}},
+                               list)};
+                     }
+               }
+         }
+   });
+   var sendKey = Elm.Native.Port.make(_elm).outboundSignal("sendKey",
+   function (v) {
+      return v;
+   },
+   A2($Signal.map,
+   $String.fromChar,
+   A2($Signal.map,$Char.fromCode,$Keyboard.presses)));
+   var randomSeed = Elm.Native.Port.make(_elm).inboundSignal("randomSeed",
+   "Main.JS",
+   function (v) {
+      return typeof v === "object" && "code" in v && "seed" in v ? {_: {}
+                                                                   ,code: typeof v.code === "string" || typeof v.code === "object" && v.code instanceof String ? v.code : _U.badPort("a string",
+                                                                   v.code)
+                                                                   ,seed: typeof v.seed === "number" ? v.seed : _U.badPort("a number",
+                                                                   v.seed)} : _U.badPort("an object with fields `code`, `seed`",v);
+   });
+   var JS = F2(function (a,b) {    return {code: a,seed: b};});
+   var NewKey = function (a) {    return {ctor: "NewKey",_0: a};};
+   var NewTime = function (a) {
+      return {ctor: "NewTime",_0: a};
+   };
+   var state = A3($Signal.foldp,
+   upstate,
+   {ctor: "_Tuple2",_0: 1,_1: _U.list([])},
+   A2($Signal.merge,
+   A2($Signal.map,NewTime,$Time.fps(100)),
+   A2($Signal.map,NewKey,A2($Signal.map,jsToEvent,randomSeed))));
+   var main = A3($Signal.map2,view,$Window.dimensions,state);
+   return _elm.Main.values = {_op: _op
+                             ,NewTime: NewTime
+                             ,NewKey: NewKey
+                             ,JS: JS
+                             ,prune: prune
+                             ,changeBkgd: changeBkgd
+                             ,toChar: toChar
+                             ,upstate: upstate
+                             ,jsToEvent: jsToEvent
+                             ,state: state
+                             ,view: view
+                             ,view2: view2
+                             ,main: main};
+};

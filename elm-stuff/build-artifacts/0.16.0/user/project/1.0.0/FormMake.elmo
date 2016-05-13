@@ -1,0 +1,1018 @@
+Elm.FormMake = Elm.FormMake || {};
+Elm.FormMake.make = function (_elm) {
+   "use strict";
+   _elm.FormMake = _elm.FormMake || {};
+   if (_elm.FormMake.values) return _elm.FormMake.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Keyframes = Elm.Keyframes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm);
+   var _op = {};
+   var oneLine = F4(function (line,_p0,f,angle) {
+      var _p1 = _p0;
+      var y = f * $Basics.sin($Basics.degrees(angle));
+      var x = f * $Basics.cos($Basics.degrees(angle));
+      return A2($Graphics$Collage.traced,
+      line,
+      A2($Graphics$Collage.segment,
+      {ctor: "_Tuple2",_0: _p1._0,_1: _p1._1},
+      {ctor: "_Tuple2",_0: x,_1: y}));
+   });
+   var circleHelp = F5(function (r,currtheta,endtheta,inc,acc) {
+      circleHelp: while (true) if (_U.cmp(currtheta,endtheta) > -1)
+      return acc; else {
+            var x = r * $Basics.cos($Basics.degrees(currtheta));
+            var y = r * $Basics.sin($Basics.degrees(currtheta));
+            var _v1 = r,
+            _v2 = currtheta + inc,
+            _v3 = endtheta,
+            _v4 = inc,
+            _v5 = A2($List._op["::"],{ctor: "_Tuple2",_0: x,_1: y},acc);
+            r = _v1;
+            currtheta = _v2;
+            endtheta = _v3;
+            inc = _v4;
+            acc = _v5;
+            continue circleHelp;
+         }
+   });
+   var sineHelp = F5(function (endx,currx,inc,mult,acc) {
+      sineHelp: while (true) if (_U.cmp(currx,endx) > -1)
+      return acc; else {
+            var y = mult * $Basics.sin(currx / 50);
+            var _v6 = endx,
+            _v7 = currx + inc,
+            _v8 = inc,
+            _v9 = mult,
+            _v10 = A2($List._op["::"],
+            {ctor: "_Tuple2",_0: currx,_1: y},
+            acc);
+            endx = _v6;
+            currx = _v7;
+            inc = _v8;
+            mult = _v9;
+            acc = _v10;
+            continue sineHelp;
+         }
+   });
+   var zigPathHelp2 = F5(function (n,x,inc,y,acc) {
+      zigPathHelp2: while (true) if (_U.eq(n,0)) return acc; else {
+            var _v11 = n - 1,
+            _v12 = x + inc,
+            _v13 = inc,
+            _v14 = 0 - y,
+            _v15 = A2($List._op["::"],{ctor: "_Tuple2",_0: x,_1: y},acc);
+            n = _v11;
+            x = _v12;
+            inc = _v13;
+            y = _v14;
+            acc = _v15;
+            continue zigPathHelp2;
+         }
+   });
+   var zigPathGen2 = F4(function (n,startx,inc,y) {
+      return A5(zigPathHelp2,n,startx,inc,y,_U.list([]));
+   });
+   var zigPathHelp = F5(function (f,x,y,n,acc) {
+      zigPathHelp: while (true) if (_U.eq(n,0)) return acc; else {
+            var _v16 = f,
+            _v17 = x - f,
+            _v18 = 0 - y,
+            _v19 = n - 1,
+            _v20 = A2($List._op["::"],{ctor: "_Tuple2",_0: x,_1: y},acc);
+            f = _v16;
+            x = _v17;
+            y = _v18;
+            n = _v19;
+            acc = _v20;
+            continue zigPathHelp;
+         }
+   });
+   var zigLeft = F5(function (f,x,y,n,acc) {
+      zigLeft: while (true) if (_U.eq(n,0)) return acc; else {
+            var _v21 = f,
+            _v22 = x - f,
+            _v23 = 0 - y,
+            _v24 = n - 1,
+            _v25 = A2($List._op["::"],{ctor: "_Tuple2",_0: x,_1: y},acc);
+            f = _v21;
+            x = _v22;
+            y = _v23;
+            n = _v24;
+            acc = _v25;
+            continue zigLeft;
+         }
+   });
+   var zigRight = F5(function (f,x,y,n,acc) {
+      zigRight: while (true) if (_U.eq(n,0)) return acc; else {
+            var _v26 = f,
+            _v27 = x + f,
+            _v28 = 0 - y,
+            _v29 = n - 1,
+            _v30 = A2($List._op["::"],{ctor: "_Tuple2",_0: x,_1: y},acc);
+            f = _v26;
+            x = _v27;
+            y = _v28;
+            n = _v29;
+            acc = _v30;
+            continue zigRight;
+         }
+   });
+   var zigPathGen = F3(function (f,y,n) {
+      var zl = A5(zigLeft,f,0 - f,0 - y,n / 2 | 0,_U.list([]));
+      var zr = $List.reverse(A5(zigRight,
+      f,
+      f,
+      0 - y,
+      n / 2 | 0,
+      _U.list([])));
+      return A2($List.append,
+      zl,
+      A2($List._op["::"],{ctor: "_Tuple2",_0: 0,_1: y},zr));
+   });
+   var goldHelp = F6(function (currang,endang,c,a,inc,acc) {
+      goldHelp: while (true) if (_U.cmp(currang,endang) < 1)
+      return acc; else {
+            var r = a * Math.pow(c,currang);
+            var x = r * $Basics.cos($Basics.degrees(currang));
+            var y = r * $Basics.sin($Basics.degrees(currang));
+            var _v31 = currang - inc,
+            _v32 = endang,
+            _v33 = c,
+            _v34 = a,
+            _v35 = inc,
+            _v36 = A2($List._op["::"],{ctor: "_Tuple2",_0: x,_1: y},acc);
+            currang = _v31;
+            endang = _v32;
+            c = _v33;
+            a = _v34;
+            inc = _v35;
+            acc = _v36;
+            continue goldHelp;
+         }
+   });
+   var fillngon = F3(function (n,r,c) {
+      return A2($Graphics$Collage.filled,
+      c,
+      A2($Graphics$Collage.ngon,n,r));
+   });
+   var twoTriangles = F4(function (w,y,r,num) {
+      var x = _U.eq(A2($Basics._op["%"],num,2),
+      0) ? -3 * w / 8 : 3 * w / 8;
+      var c = _U.eq(num,1) || _U.eq(num,10) ? A3($Color.rgb,
+      102,
+      0,
+      0) : _U.eq(num,2) || _U.eq(num,9) ? A3($Color.rgb,
+      156,
+      15,
+      15) : _U.eq(num,3) || _U.eq(num,8) ? A3($Color.rgb,
+      153,
+      0,
+      0) : _U.eq(num,4) || _U.eq(num,7) ? A3($Color.rgb,
+      247,
+      47,
+      47) : A3($Color.rgb,204,51,51);
+      var t2 = A2($Graphics$Collage.rotate,
+      $Basics.degrees(90),
+      A3(fillngon,3,r,c));
+      var t1 = A2($Graphics$Collage.rotate,
+      $Basics.degrees(270),
+      A3(fillngon,3,r,c));
+      return $Graphics$Collage.group(_U.list([A2($Graphics$Collage.move,
+                                             {ctor: "_Tuple2",_0: x,_1: y},
+                                             t1)
+                                             ,A2($Graphics$Collage.move,
+                                             {ctor: "_Tuple2",_0: x,_1: 0 - y},
+                                             t2)]));
+   });
+   var drawOval = F3(function (w,h,c) {
+      return A2($Graphics$Collage.filled,
+      c,
+      A2($Graphics$Collage.oval,w,h));
+   });
+   var drawCircle = F2(function (r,c) {
+      return A2($Graphics$Collage.filled,
+      c,
+      $Graphics$Collage.circle(r));
+   });
+   var sparkle2 = F2(function (f,_p2) {
+      var _p3 = _p2;
+      var y = f * $Basics.cos($Basics.degrees(45));
+      var x = f * $Basics.sin($Basics.degrees(45));
+      var rad = $Basics.toFloat(_p3._0 / 50 | 0);
+      var c1 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: f,_1: 0},
+      A2(drawCircle,rad,$Color.orange));
+      var c2 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: 0,_1: f},
+      A2(drawCircle,rad,$Color.darkOrange));
+      var c3 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: 0 - f,_1: 0},
+      A2(drawCircle,rad,$Color.yellow));
+      var c4 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: 0,_1: 0 - f},
+      A2(drawCircle,rad,$Color.lightOrange));
+      var c5 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: x,_1: y},
+      A2(drawCircle,rad,$Color.darkOrange));
+      var c6 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: x,_1: 0 - y},
+      A2(drawCircle,rad,$Color.orange));
+      var c7 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: 0 - x,_1: 0 - y},
+      A2(drawCircle,rad,$Color.lightOrange));
+      var c8 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: 0 - x,_1: y},
+      A2(drawCircle,rad,$Color.yellow));
+      return $Graphics$Collage.group(_U.list([c1
+                                             ,c2
+                                             ,c3
+                                             ,c4
+                                             ,c5
+                                             ,c6
+                                             ,c7
+                                             ,c8]));
+   });
+   var circleDotHelp = F6(function (f,currangle,inc,r,c,acc) {
+      circleDotHelp: while (true) if (_U.cmp(currangle,360) > -1)
+      return acc; else {
+            var circ = A2($Graphics$Collage.move,
+            {ctor: "_Tuple2"
+            ,_0: f * $Basics.cos($Basics.degrees(currangle))
+            ,_1: f * $Basics.sin($Basics.degrees(currangle))},
+            A2(drawCircle,r,c));
+            var _v38 = f,
+            _v39 = currangle + inc,
+            _v40 = inc,
+            _v41 = r,
+            _v42 = c,
+            _v43 = A2($List._op["::"],circ,acc);
+            f = _v38;
+            currangle = _v39;
+            inc = _v40;
+            r = _v41;
+            c = _v42;
+            acc = _v43;
+            continue circleDotHelp;
+         }
+   });
+   var circleDots = F5(function (circr,dotr,inc,c,_p4) {
+      var _p5 = _p4;
+      var circlist = A6(circleDotHelp,circr,0,inc,dotr,c,_U.list([]));
+      return $Graphics$Collage.group(circlist);
+   });
+   var trans = F2(function (_p6,num) {
+      var _p7 = _p6;
+      var _p9 = _p7._1;
+      var _p8 = _p7._0;
+      if (_U.eq(num,1) || _U.eq(num,10)) return {ctor: "_Tuple2"
+                                                ,_0: _p8
+                                                ,_1: _p9}; else if (_U.eq(num,2) || _U.eq(num,9))
+         return {ctor: "_Tuple2",_0: _p9,_1: _p8}; else if (_U.eq(num,3))
+            return {ctor: "_Tuple2",_0: _p8,_1: 0 - _p9};
+            else if (_U.eq(num,4)) return {ctor: "_Tuple2"
+                                          ,_0: 0 - _p9
+                                          ,_1: _p8}; else if (_U.eq(num,5)) {
+                        var x$ = $Basics.cos($Basics.pi / 4) * _p8 - $Basics.sin($Basics.pi / 4) * _p9;
+                        var y$ = $Basics.sin($Basics.pi / 4) * _p8 + $Basics.cos($Basics.pi / 4) * _p9;
+                        return {ctor: "_Tuple2",_0: x$,_1: y$};
+                     } else if (_U.eq(num,6)) {
+                           var x$ = $Basics.cos(3 * $Basics.pi / 4) * _p8 - $Basics.sin(3 * $Basics.pi / 4) * _p9;
+                           var y$ = $Basics.sin(3 * $Basics.pi / 4) * _p8 + $Basics.cos(3 * $Basics.pi / 4) * _p9;
+                           return {ctor: "_Tuple2",_0: x$,_1: y$};
+                        } else if (_U.eq(num,7)) {
+                              var x$ = $Basics.cos((0 - $Basics.pi) / 4) * _p8 - $Basics.sin((0 - $Basics.pi) / 4) * _p9;
+                              var y$ = $Basics.sin((0 - $Basics.pi) / 4) * _p8 + $Basics.cos((0 - $Basics.pi) / 4) * _p9;
+                              return {ctor: "_Tuple2",_0: x$,_1: y$};
+                           } else {
+                              var x$ = $Basics.cos(-3 * $Basics.pi / 4) * _p8 - $Basics.sin(-3 * $Basics.pi / 4) * _p9;
+                              var y$ = $Basics.sin(-3 * $Basics.pi / 4) * _p8 + $Basics.cos(-3 * $Basics.pi / 4) * _p9;
+                              return {ctor: "_Tuple2",_0: x$,_1: y$};
+                           }
+   });
+   var sparkle1 = F3(function (f,num,_p10) {
+      var _p11 = _p10;
+      var c14 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0.3 * f,_1: 0.8 * f},num),
+      A2(drawCircle,6.0,$Color.white));
+      var c13 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0.6 * f,_1: f},num),
+      A2(drawCircle,4.0,$Color.white));
+      var c12 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -0.6 * f,_1: 1.6 * f},num),
+      A2(drawCircle,6.0,$Color.white));
+      var c11 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -0.4 * f,_1: 0.5 * f},num),
+      A2(drawCircle,4.0,$Color.white));
+      var c10 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0,_1: 0.6 * f},num),
+      A2(drawCircle,3.0,$Color.white));
+      var c9 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0.4 * f,_1: 1.6 * f},num),
+      A2(drawCircle,6.0,$Color.white));
+      var c8 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -0.75 * f,_1: 1.3 * f},num),
+      A2(drawCircle,6.0,$Color.white));
+      var c7 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0.2 * f,_1: 0.3 * f},num),
+      A2(drawCircle,8.0,$Color.white));
+      var c6 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: f,_1: f},num),
+      A2(drawCircle,8.0,$Color.white));
+      var c5 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -0.3 * f,_1: 0.8 * f},num),
+      A2(drawCircle,5.0,$Color.white));
+      var c4 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -0.5 * f,_1: 0.3 * f},num),
+      A2(drawCircle,9.0,$Color.white));
+      var c3 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0.2 * f,_1: 2.8 * f},num),
+      A2(drawCircle,5.0,$Color.white));
+      var c2 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0.5 * f,_1: 0.5 * f},num),
+      A2(drawCircle,7.0,$Color.white));
+      var c1 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: 0,_1: f},num),
+      A2(drawCircle,10.0,$Color.white));
+      return $Graphics$Collage.group(_U.list([c1
+                                             ,c2
+                                             ,c3
+                                             ,c4
+                                             ,c5
+                                             ,c6
+                                             ,c7
+                                             ,c8
+                                             ,c9
+                                             ,c10
+                                             ,c11
+                                             ,c12
+                                             ,c13
+                                             ,c14]));
+   });
+   var dotCluster = F5(function (f,num,_p13,_p12,c) {
+      var _p14 = _p13;
+      var _p19 = _p14._1;
+      var _p18 = _p14._0;
+      var _p15 = _p12;
+      var _p17 = _p15._0;
+      var _p16 = _p15._1;
+      var hfloat = $Basics.toFloat(_p16);
+      var c2 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: f * f,_1: 5 * f},num),
+      A2(drawCircle,hfloat / 41,c));
+      var c3 = A2($Graphics$Collage.move,
+      A2(trans,
+      {ctor: "_Tuple2",_0: _p18 * f,_1: 2.8 * f},
+      $Basics.round(f)),
+      A2(drawCircle,hfloat / 40,c));
+      var c5 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: (0 - _p19) * f,_1: -6 * f},num),
+      A2(drawCircle,hfloat / 42,c));
+      var c7 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -10 * f,_1: 8 * f},num * 5),
+      A2(drawCircle,hfloat / 44,c));
+      var c9 = A2($Graphics$Collage.move,
+      A2(trans,
+      {ctor: "_Tuple2",_0: f * f,_1: 13 * f},
+      $Basics.round(f * 5)),
+      A2(drawCircle,hfloat / 43,c));
+      var c11 = A2($Graphics$Collage.move,
+      A2(trans,
+      {ctor: "_Tuple2",_0: (0 - _p18) * f,_1: _p18 * f},
+      $Basics.round(f)),
+      A2(drawCircle,hfloat / 46,c));
+      var c13 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -10 * f,_1: f},num),
+      A2(drawCircle,hfloat / 44,c));
+      var wfloat = $Basics.toFloat(_p17);
+      var c1 = A2($Graphics$Collage.move,
+      A2(trans,
+      {ctor: "_Tuple2",_0: f,_1: f * $Basics.toFloat(num)},
+      $Basics.round(f)),
+      A2(drawCircle,wfloat / 40,c));
+      var c4 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: -0.5 * f,_1: _p18 * f},num * 2),
+      A2(drawCircle,wfloat / 43,c));
+      var c6 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: f,_1: f},num),
+      A2(drawCircle,wfloat / 47,c));
+      var c8 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: (0 - _p19) * f,_1: 11 * f},num),
+      A2(drawCircle,wfloat / 48,c));
+      var c10 = A2($Graphics$Collage.move,
+      A2(trans,{ctor: "_Tuple2",_0: _p19 * _p19,_1: _p18 * f},num),
+      A2(drawCircle,wfloat / 49,c));
+      var c12 = A2($Graphics$Collage.move,
+      A2(trans,
+      {ctor: "_Tuple2",_0: (0 - f) * f,_1: 1.6 * f},
+      _p17 / 15 | 0),
+      A2(drawCircle,wfloat / 47,c));
+      var c14 = A2($Graphics$Collage.move,
+      A2(trans,
+      {ctor: "_Tuple2",_0: _p18 * f,_1: _p19 * f},
+      _p16 / 12 | 0),
+      A2(drawCircle,wfloat / 50,c));
+      return $Graphics$Collage.group(_U.list([c1
+                                             ,c2
+                                             ,c3
+                                             ,c4
+                                             ,c5
+                                             ,c6
+                                             ,c7
+                                             ,c8
+                                             ,c9
+                                             ,c10
+                                             ,c11
+                                             ,c12
+                                             ,c13
+                                             ,c14]));
+   });
+   var dotClusters = F4(function (f,num,_p21,_p20) {
+      var _p22 = _p21;
+      var _p27 = _p22._1;
+      var _p26 = _p22._0;
+      var _p23 = _p20;
+      var _p25 = _p23._0;
+      var _p24 = _p23._1;
+      var cluster3 = A2($Graphics$Collage.moveY,
+      $Basics.toFloat(_p24 / 10 | 0),
+      A2($Graphics$Collage.rotate,
+      220,
+      A5(dotCluster,
+      f,
+      num,
+      {ctor: "_Tuple2",_0: _p26 + $Basics.toFloat(num),_1: _p27},
+      {ctor: "_Tuple2",_0: _p25,_1: _p24},
+      $Color.lightPurple)));
+      var cluster1 = A5(dotCluster,
+      f,
+      num,
+      {ctor: "_Tuple2",_0: _p26,_1: _p27},
+      {ctor: "_Tuple2",_0: _p25,_1: _p24},
+      $Color.darkPurple);
+      var ang = $Basics.toFloat(num) * 35;
+      var cluster2 = A2($Graphics$Collage.moveX,
+      $Basics.toFloat((0 - _p25) / 12 | 0),
+      A2($Graphics$Collage.rotate,
+      ang,
+      A5(dotCluster,
+      f,
+      num * 2,
+      {ctor: "_Tuple2",_0: _p26,_1: _p27},
+      {ctor: "_Tuple2",_0: _p25,_1: _p24},
+      $Color.purple)));
+      return $Graphics$Collage.group(_U.list([cluster1
+                                             ,cluster2
+                                             ,cluster3]));
+   });
+   var lblue = A3($Color.rgb,188,231,253);
+   var lpurp = A3($Color.rgb,196,146,177);
+   var bBlue = A3($Color.rgb,18,234,234);
+   var bGreen = A3($Color.rgb,176,221,67);
+   var hPink = A3($Color.rgb,219,39,99);
+   var circLine = F2(function (c,_p28) {
+      var _p29 = _p28;
+      return {color: c
+             ,width: _p29._0 / 40
+             ,cap: $Graphics$Collage.Flat
+             ,join: $Graphics$Collage.Sharp(10)
+             ,dashing: _U.list([])
+             ,dashOffset: 0};
+   });
+   var gradualCircle = F3(function (r,theta,_p30) {
+      var _p31 = _p30;
+      return A2($Graphics$Collage.traced,
+      A2(circLine,
+      $Color.lightGreen,
+      {ctor: "_Tuple2",_0: _p31._0,_1: _p31._1}),
+      $Graphics$Collage.path(A5(circleHelp,r,0,theta,5,_U.list([]))));
+   });
+   var zigLine = F2(function (c,_p32) {
+      var _p33 = _p32;
+      return {color: c
+             ,width: _p33._0 / 275
+             ,cap: $Graphics$Collage.Flat
+             ,join: $Graphics$Collage.Sharp(10)
+             ,dashing: _U.list([])
+             ,dashOffset: 0};
+   });
+   var drawPath2 = F2(function (pts,_p34) {
+      var _p35 = _p34;
+      return A2($Graphics$Collage.traced,
+      A2(zigLine,
+      A4($Color.rgba,50,171,252,1),
+      {ctor: "_Tuple2",_0: _p35._0,_1: _p35._1}),
+      $Graphics$Collage.path(pts));
+   });
+   var thickestLine = F2(function (c,_p36) {
+      var _p37 = _p36;
+      return {color: c
+             ,width: 30.0
+             ,cap: $Graphics$Collage.Round
+             ,join: $Graphics$Collage.Smooth
+             ,dashing: _U.list([])
+             ,dashOffset: 0};
+   });
+   var thickerLine = F2(function (c,_p38) {
+      var _p39 = _p38;
+      return {color: c
+             ,width: _p39._0 / 90
+             ,cap: $Graphics$Collage.Round
+             ,join: $Graphics$Collage.Smooth
+             ,dashing: _U.list([])
+             ,dashOffset: 0};
+   });
+   var drawthickngon = F4(function (n,r,c,_p40) {
+      var _p41 = _p40;
+      return A2($Graphics$Collage.outlined,
+      A2(thickerLine,c,{ctor: "_Tuple2",_0: _p41._0,_1: _p41._1}),
+      A2($Graphics$Collage.ngon,n,r));
+   });
+   var thickLine = F2(function (c,_p42) {
+      var _p43 = _p42;
+      return {color: c
+             ,width: _p43._0 / 160
+             ,cap: $Graphics$Collage.Round
+             ,join: $Graphics$Collage.Smooth
+             ,dashing: _U.list([])
+             ,dashOffset: 0};
+   });
+   var drawngon = F4(function (n,r,c,_p44) {
+      var _p45 = _p44;
+      return A2($Graphics$Collage.outlined,
+      A2(thickLine,c,{ctor: "_Tuple2",_0: _p45._0,_1: _p45._1}),
+      A2($Graphics$Collage.ngon,n,r));
+   });
+   var multngon = F5(function (rand,size,angle,c,_p46) {
+      var _p47 = _p46;
+      var _p49 = _p47._0;
+      var _p48 = _p47._1;
+      var ngon4 = A2($Graphics$Collage.rotate,
+      0 - angle,
+      A4(drawngon,
+      rand,
+      size * (1 / 4),
+      c,
+      {ctor: "_Tuple2",_0: _p49,_1: _p48}));
+      var ngon3 = A2($Graphics$Collage.rotate,
+      angle - 1,
+      A4(drawngon,
+      rand,
+      size * (1 / 2),
+      c,
+      {ctor: "_Tuple2",_0: _p49,_1: _p48}));
+      var ngon2 = A2($Graphics$Collage.rotate,
+      0 - angle + 1,
+      A4(drawngon,
+      rand,
+      size * (3 / 4),
+      c,
+      {ctor: "_Tuple2",_0: _p49,_1: _p48}));
+      var ngon1 = A2($Graphics$Collage.rotate,
+      angle,
+      A4(drawngon,rand,size,c,{ctor: "_Tuple2",_0: _p49,_1: _p48}));
+      return $Graphics$Collage.group(_U.list([ngon1
+                                             ,ngon2
+                                             ,ngon3
+                                             ,ngon4]));
+   });
+   var fourmultngon = F5(function (rand,size,angle,_p50,c) {
+      var _p51 = _p50;
+      var _p53 = _p51._0;
+      var _p52 = _p51._1;
+      var hmove = _p52 * (9 / 32);
+      var wmove = _p53 * (11 / 32);
+      var ngon1 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: wmove,_1: hmove},
+      A5(multngon,
+      rand,
+      size,
+      angle,
+      c,
+      {ctor: "_Tuple2",_0: _p53,_1: _p52}));
+      var ngon2 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: 0 - wmove,_1: hmove},
+      A5(multngon,
+      rand,
+      size,
+      angle,
+      c,
+      {ctor: "_Tuple2",_0: _p53,_1: _p52}));
+      var ngon3 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: wmove,_1: 0 - hmove},
+      A5(multngon,
+      rand,
+      size,
+      angle,
+      c,
+      {ctor: "_Tuple2",_0: _p53,_1: _p52}));
+      var ngon4 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: 0 - wmove,_1: 0 - hmove},
+      A5(multngon,
+      rand,
+      size,
+      angle,
+      c,
+      {ctor: "_Tuple2",_0: _p53,_1: _p52}));
+      return $Graphics$Collage.group(_U.list([ngon1
+                                             ,ngon2
+                                             ,ngon3
+                                             ,ngon4]));
+   });
+   var goldenSpiral = F3(function (angle,a,_p54) {
+      var _p55 = _p54;
+      var c = 1.0053611;
+      var goldlist = A6(goldHelp,1440,angle,c,a,5,_U.list([]));
+      return A2($Graphics$Collage.traced,
+      A2(thickLine,
+      $Color.black,
+      {ctor: "_Tuple2",_0: _p55._0,_1: _p55._1}),
+      $Graphics$Collage.path(goldlist));
+   });
+   var drawPath = F2(function (pts,_p56) {
+      var _p57 = _p56;
+      return A2($Graphics$Collage.traced,
+      A2(thickLine,
+      A4($Color.rgba,255,255,0,1),
+      {ctor: "_Tuple2",_0: _p57._0,_1: _p57._1}),
+      $Graphics$Collage.path(pts));
+   });
+   var doubleZig = F2(function (pts,_p58) {
+      var _p59 = _p58;
+      var _p61 = _p59._0;
+      var _p60 = _p59._1;
+      var f1 = A2($Graphics$Collage.moveX,
+      3 / 8 * _p61,
+      A2($Graphics$Collage.rotate,
+      90,
+      A2(drawPath,pts,{ctor: "_Tuple2",_0: _p61,_1: _p60})));
+      var f2 = A2($Graphics$Collage.moveX,
+      (0 - 3 / 8) * _p61,
+      A2($Graphics$Collage.rotate,
+      180,
+      A2(drawPath,pts,{ctor: "_Tuple2",_0: _p61,_1: _p60})));
+      return $Graphics$Collage.group(_U.list([f1,f2]));
+   });
+   var drawSine = F4(function (startx,currx,mult,_p62) {
+      var _p63 = _p62;
+      return A2($Graphics$Collage.traced,
+      A2(thickLine,
+      $Color.red,
+      {ctor: "_Tuple2",_0: _p63._0,_1: _p63._1}),
+      $Graphics$Collage.path(A5(sineHelp,
+      currx,
+      startx,
+      5,
+      mult,
+      _U.list([]))));
+   });
+   var singLine = F3(function (_p64,rand,f) {
+      var _p65 = _p64;
+      var _p68 = _p65._0;
+      var _p67 = _p65._1;
+      var _p66 = _U.cmp(rand,2) < 0 ? {ctor: "_Tuple2"
+                                      ,_0: {ctor: "_Tuple2",_0: _p68 / 2,_1: (0 - _p67) / 2}
+                                      ,_1: 115} : _U.cmp(rand,4) < 0 && _U.cmp(rand,
+      2) > -1 ? {ctor: "_Tuple2"
+                ,_0: {ctor: "_Tuple2",_0: (0 - _p68) / 2,_1: (0 - _p67) / 2}
+                ,_1: 70} : _U.cmp(rand,6) < 0 && _U.cmp(rand,
+      4) > -1 ? {ctor: "_Tuple2"
+                ,_0: {ctor: "_Tuple2",_0: _p68 / 2,_1: 0}
+                ,_1: 210} : _U.cmp(rand,8) < 0 && _U.cmp(rand,
+      6) > -1 ? {ctor: "_Tuple2"
+                ,_0: {ctor: "_Tuple2",_0: (0 - _p68) / 2,_1: 0}
+                ,_1: 25} : _U.cmp(rand,9) < 0 && _U.cmp(rand,
+      8) > -1 ? {ctor: "_Tuple2"
+                ,_0: {ctor: "_Tuple2",_0: _p68 / 2,_1: _p67 / 2}
+                ,_1: 260} : {ctor: "_Tuple2"
+                            ,_0: {ctor: "_Tuple2",_0: _p68 / 3,_1: _p67 / 2}
+                            ,_1: 235};
+      var mvx = _p66._0._0;
+      var mvy = _p66._0._1;
+      var ang = _p66._1;
+      return A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: mvx,_1: mvy},
+      A4(oneLine,
+      A2(thickLine,$Color.yellow,{ctor: "_Tuple2",_0: _p68,_1: _p67}),
+      {ctor: "_Tuple2",_0: 0,_1: 0},
+      f,
+      ang));
+   });
+   var twoLines = F2(function (_p69,f) {
+      var _p70 = _p69;
+      var _p72 = _p70._0;
+      var _p71 = _p70._1;
+      var hfloat = $Basics.toFloat(_p71);
+      var wfloat = $Basics.toFloat(_p72);
+      var l1 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2"
+      ,_0: $Basics.toFloat((0 - _p72) / 2 | 0)
+      ,_1: $Basics.toFloat((0 - _p71) / 2 | 0)},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.darkGreen,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0},
+      f,
+      35.0));
+      var l2 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2"
+      ,_0: $Basics.toFloat(_p72 / 2 | 0)
+      ,_1: $Basics.toFloat((0 - _p71) / 2 | 0)},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.darkGreen,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0},
+      f,
+      145.0));
+      return $Graphics$Collage.group(_U.list([l1,l2]));
+   });
+   var manyLines = F2(function (_p73,f) {
+      var _p74 = _p73;
+      var opp = 0 - f;
+      var hfloat = $Basics.toFloat(_p74._1);
+      var wfloat = $Basics.toFloat(_p74._0);
+      var frac = wfloat / 13;
+      var l1 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: (0 - frac) * 6,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.darkRed,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l2 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: (0 - frac) * 5,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.red,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l3 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: (0 - frac) * 4,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.darkOrange,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l4 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: (0 - frac) * 3,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.orange,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l5 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: (0 - frac) * 2,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.yellow,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l6 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: (0 - frac) * 1,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.lightYellow,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l7 = A4(oneLine,
+      A2(thickLine,
+      $Color.green,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0);
+      var l8 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: frac * 1,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.darkGreen,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l9 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: frac * 2,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.blue,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l10 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: frac * 3,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.darkBlue,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l11 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: frac * 4,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.darkPurple,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l12 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: frac * 5,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.purple,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      var l13 = A2($Graphics$Collage.move,
+      {ctor: "_Tuple2",_0: frac * 6,_1: 0},
+      A4(oneLine,
+      A2(thickLine,
+      $Color.lightPurple,
+      {ctor: "_Tuple2",_0: wfloat,_1: hfloat}),
+      {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+      f,
+      90.0));
+      return $Graphics$Collage.group(_U.list([l1
+                                             ,l2
+                                             ,l3
+                                             ,l4
+                                             ,l5
+                                             ,l6
+                                             ,l7
+                                             ,l8
+                                             ,l9
+                                             ,l10
+                                             ,l11
+                                             ,l12
+                                             ,l13]));
+   });
+   var drawLines = F4(function (kstate,n,_p75,neg) {
+      var _p76 = _p75;
+      var _p82 = _p76._0;
+      var _p81 = _p76._1;
+      var _p77 = kstate;
+      if (_p77.ctor === "::") {
+            var spacing = _p82 / 13 | 0;
+            var offset = $Basics.toFloat(spacing * n);
+            var inc = neg ? n - 1 : n + 1;
+            var valres = $String.toFloat(_p77._0._1);
+            var _p78 = valres;
+            if (_p78.ctor === "Ok") {
+                  var _p79 = _p78._0;
+                  var opp = 0 - _p79;
+                  return A2($List._op["::"],
+                  A2($Graphics$Collage.move,
+                  {ctor: "_Tuple2",_0: offset,_1: 0},
+                  A4(oneLine,
+                  A2(thickLine,
+                  $Color.darkGrey,
+                  {ctor: "_Tuple2"
+                  ,_0: $Basics.toFloat(_p82)
+                  ,_1: $Basics.toFloat(_p81)}),
+                  {ctor: "_Tuple2",_0: 0,_1: 0.2 * opp},
+                  _p79,
+                  90.0)),
+                  A4(drawLines,
+                  _p77._1,
+                  inc,
+                  {ctor: "_Tuple2",_0: _p82,_1: _p81},
+                  neg));
+               } else {
+                  return _U.crashCase("FormMake",
+                  {start: {line: 402,column: 13},end: {line: 408,column: 48}},
+                  _p78)("invalid line");
+               }
+         } else {
+            return _U.list([]);
+         }
+   });
+   var line1 = F2(function (c,_p83) {
+      var _p84 = _p83;
+      return {color: c
+             ,width: _p84._0 / 275
+             ,cap: $Graphics$Collage.Round
+             ,join: $Graphics$Collage.Smooth
+             ,dashing: _U.list([])
+             ,dashOffset: 0};
+   });
+   var drawRipngon = F4(function (n,r,c,_p85) {
+      var _p86 = _p85;
+      return A2($Graphics$Collage.outlined,
+      A2(line1,c,{ctor: "_Tuple2",_0: _p86._0,_1: _p86._1}),
+      A2($Graphics$Collage.ngon,n,r));
+   });
+   var ripple = F5(function (f,r,g,b,_p87) {
+      var _p88 = _p87;
+      var _p90 = _p88._0;
+      var _p89 = _p88._1;
+      var r6 = A4(drawRipngon,
+      4,
+      2 * f,
+      A4($Color.rgba,r,g,b,1 - 2 * f / _p90),
+      {ctor: "_Tuple2",_0: _p90,_1: _p89});
+      var r5 = A4(drawRipngon,
+      4,
+      1.5 * f,
+      A4($Color.rgba,r,g,b,1 - 1.5 * f / _p90),
+      {ctor: "_Tuple2",_0: _p90,_1: _p89});
+      var r4 = A4(drawRipngon,
+      4,
+      f,
+      A4($Color.rgba,r,g,b,1 - f / _p90),
+      {ctor: "_Tuple2",_0: _p90,_1: _p89});
+      var r3 = A4(drawRipngon,
+      4,
+      0.8 * f,
+      A4($Color.rgba,r,g,b,1 - 0.8 * f / _p90),
+      {ctor: "_Tuple2",_0: _p90,_1: _p89});
+      var r2 = A4(drawRipngon,
+      4,
+      0.5 * f,
+      A4($Color.rgba,r,g,b,1 - 0.5 * f / _p90),
+      {ctor: "_Tuple2",_0: _p90,_1: _p89});
+      var r1 = A4(drawRipngon,
+      4,
+      0.3 * f,
+      A4($Color.rgba,r,g,b,1 - 0.3 * f / _p90),
+      {ctor: "_Tuple2",_0: _p90,_1: _p89});
+      var r0 = A4(drawRipngon,
+      4,
+      0.1 * f,
+      A4($Color.rgba,r,g,b,1 - 0.3 * f / _p90),
+      {ctor: "_Tuple2",_0: _p90,_1: _p89});
+      return $Graphics$Collage.group(_U.list([r1,r2,r3,r4,r5,r6]));
+   });
+   return _elm.FormMake.values = {_op: _op
+                                 ,line1: line1
+                                 ,thickLine: thickLine
+                                 ,thickerLine: thickerLine
+                                 ,thickestLine: thickestLine
+                                 ,zigLine: zigLine
+                                 ,circLine: circLine
+                                 ,hPink: hPink
+                                 ,bGreen: bGreen
+                                 ,bBlue: bBlue
+                                 ,lpurp: lpurp
+                                 ,lblue: lblue
+                                 ,trans: trans
+                                 ,drawCircle: drawCircle
+                                 ,drawOval: drawOval
+                                 ,drawRipngon: drawRipngon
+                                 ,drawngon: drawngon
+                                 ,drawthickngon: drawthickngon
+                                 ,fillngon: fillngon
+                                 ,multngon: multngon
+                                 ,fourmultngon: fourmultngon
+                                 ,ripple: ripple
+                                 ,goldHelp: goldHelp
+                                 ,goldenSpiral: goldenSpiral
+                                 ,zigRight: zigRight
+                                 ,zigLeft: zigLeft
+                                 ,zigPathHelp: zigPathHelp
+                                 ,zigPathGen: zigPathGen
+                                 ,zigPathHelp2: zigPathHelp2
+                                 ,zigPathGen2: zigPathGen2
+                                 ,drawPath: drawPath
+                                 ,doubleZig: doubleZig
+                                 ,drawPath2: drawPath2
+                                 ,sineHelp: sineHelp
+                                 ,drawSine: drawSine
+                                 ,circleHelp: circleHelp
+                                 ,gradualCircle: gradualCircle
+                                 ,sparkle1: sparkle1
+                                 ,sparkle2: sparkle2
+                                 ,circleDotHelp: circleDotHelp
+                                 ,circleDots: circleDots
+                                 ,dotCluster: dotCluster
+                                 ,dotClusters: dotClusters
+                                 ,oneLine: oneLine
+                                 ,singLine: singLine
+                                 ,twoLines: twoLines
+                                 ,manyLines: manyLines
+                                 ,drawLines: drawLines
+                                 ,twoTriangles: twoTriangles};
+};

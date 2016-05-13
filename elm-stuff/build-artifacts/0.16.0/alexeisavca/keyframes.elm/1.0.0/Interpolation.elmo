@@ -1,0 +1,49 @@
+Elm.Interpolation = Elm.Interpolation || {};
+Elm.Interpolation.make = function (_elm) {
+   "use strict";
+   _elm.Interpolation = _elm.Interpolation || {};
+   if (_elm.Interpolation.values) return _elm.Interpolation.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Regex = Elm.Regex.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm);
+   var _op = {};
+   var replaceStr = function (_p0) {
+      var _p1 = _p0;
+      return A3($Regex.replace,$Regex.All,$Regex.regex($Regex.escape(_p1._0)),function (_p2) {    return _p1._1;});
+   };
+   var sanitizeProperties = function (_p3) {
+      return A2(replaceStr,{ctor: "_Tuple2",_0: "2d",_1: "TWO_D"},A2(replaceStr,{ctor: "_Tuple2",_0: "3d",_1: "THREE_D"},_p3));
+   };
+   var unsanitizeProperties = function (_p4) {
+      return A2(replaceStr,{ctor: "_Tuple2",_0: "TWO_D",_1: "2d"},A2(replaceStr,{ctor: "_Tuple2",_0: "THREE_D",_1: "3d"},_p4));
+   };
+   var interpolateNumbers = F2(function (string,numbers) {
+      return unsanitizeProperties(A3($List.foldl,
+      F2(function (number,_p5) {    return A2(replaceStr,{ctor: "_Tuple2",_0: "$",_1: $Basics.toString(number)},string);}),
+      string,
+      numbers));
+   });
+   var numberRegex = $Regex.regex("[-]?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
+   var placeholdNumbers = function (_p6) {    return A4($Regex.replace,$Regex.All,numberRegex,function (_p7) {    return "$";},sanitizeProperties(_p6));};
+   var extractNumbers = function (string) {
+      return A2($List.map,
+      function (_p8) {
+         return A2($Result.withDefault,0,$String.toFloat(_p8));
+      },
+      A2($List.map,function (_) {    return _.match;},A3($Regex.find,$Regex.All,numberRegex,sanitizeProperties(string))));
+   };
+   return _elm.Interpolation.values = {_op: _op
+                                      ,numberRegex: numberRegex
+                                      ,replaceStr: replaceStr
+                                      ,sanitizeProperties: sanitizeProperties
+                                      ,unsanitizeProperties: unsanitizeProperties
+                                      ,placeholdNumbers: placeholdNumbers
+                                      ,extractNumbers: extractNumbers
+                                      ,interpolateNumbers: interpolateNumbers};
+};
